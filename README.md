@@ -1,6 +1,6 @@
-# Transient Attack Test Suite
+# Transient Execution Attack Test Suite
 
-TAT Suite(Transient Attack Test Suite) is a project used to evaluate whether your system is affected by Meltdown and Spectre. My goal is to build a easy-to-use(hard to implement) and configurable transient attack test suite.
+TAT Suite(Transient execution Attack Test Suite) is a project used to evaluate whether your system is affected by Meltdown and Spectre. My goal is to build a easy-to-use(hard to implement) and configurable transient attack test suite.
 
 This project is mainly based on project [Transient Fail](https://github.com/IAIK/transientfail) developed by [IAIK](https://www.iaik.tugraz.at/). More information will be found on their paper [A Systematic Evaluation of Transient Execution Attacks and Defenses](http://cc0x1f.net/publications/transient_sytematization.pdf).
 
