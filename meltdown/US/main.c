@@ -30,14 +30,12 @@ void main(int argc, char **argv)
     PREPARE();
 
     printf("Meltdown_US Begins...\n");
-    int temp = system("sudo insmod libpte/module/pteditor.ko");
 
     // Initialize PTEditor to manipulate page table entries
     if (ptedit_init())
     {
         printf(ANSI_COLOR_GREEN "Meltdown_US: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_US done!\n\n");
-        temp = system("sudo rmmod libpte/module/pteditor.ko");
         return;
     }
 
@@ -48,7 +46,6 @@ void main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_US: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_US done!\n\n");
-        temp = system("sudo rmmod libpte/module/pteditor.ko");
         return;
     }
 
@@ -57,7 +54,6 @@ void main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_US: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_US done!\n\n");
-        temp = system("sudo rmmod libpte/module/pteditor.ko");
         return;
     }
 
@@ -101,7 +97,7 @@ void main(int argc, char **argv)
     }
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
-        printf("Success rate: %lf\n", (double)passed_count / MAX_TRY_TIMES);
+        // printf("Success rate: %lf\n", (double)passed_count / MAX_TRY_TIMES);
         printf(ANSI_COLOR_RED "Meltdown_US: Vulnerable\n" ANSI_COLOR_RESET);
     }
     else
@@ -112,6 +108,5 @@ void main(int argc, char **argv)
     munmap(accessor, pagesize);
     shm_unlink("shared_mapping");
     ptedit_cleanup();
-    temp = system("sudo rmmod libpte/module/pteditor.ko");
     printf("Meltdown_US done!\n\n");
 }
