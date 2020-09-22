@@ -210,16 +210,16 @@ void flush(void *p)
     asm volatile("clflush 0(%0)\n"
                  :
                  : "c"(p)
-                 : "rax");
+                 : "eax");
 }
 
 // 访问内存的某地址，从而将内存中的数据加载到cache中
 void maccess(void *p)
 {
-    asm volatile("movq (%0), %%rax\n"
+    asm volatile("mov (%0), %%eax\n"
                  :
                  : "c"(p)
-                 : "rax");
+                 : "eax");
 }
 
 // mfence指令的包装，确保串行化之前的读写操作，同步作用
@@ -375,9 +375,6 @@ size_t detect_flush_reload_threshold()
     {
         reload_time += reload_t(ptr);
     }
-    // 清理cache
-    mfence();
-    flush(ptr);
     // 测量数据不在cache中时的访问时间
     for (i = 0; i < count; i++)
     {
@@ -413,6 +410,7 @@ void trycatch_segfault_handler(int signum)
     {
         unblock_signal(i);
     }
+    // unblock_signal(signum);
     longjmp(trycatch_buf, 1);
 }
 

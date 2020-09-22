@@ -1,4 +1,4 @@
-all: libcache/get libpte/mod meltdown/AC/main meltdown/US/main
+all: libcache/get libpte/mod meltdown/AC/main meltdown/BR/main meltdown/US/main
 
 libcache/get: 
 	cd libcache && make
@@ -8,6 +8,9 @@ libpte/mod:
 
 meltdown/AC/main:
 	cd meltdown/AC && make x86
+
+meltdown/BR/main:
+	cd meltdown/BR && make x86
 
 meltdown/US/main:
 	cd meltdown/US && make x86

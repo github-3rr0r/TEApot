@@ -6,6 +6,8 @@ printf "pagesize = $pagesize, threshold = $threshold\n\n"
 # Exploit
 # meltdown_ac
 ./meltdown/AC/poc $pagesize $threshold
+# meltdown_br
+./meltdown/BR/poc $pagesize $threshold
 # meltdown_us
 sudo insmod libpte/module/pteditor.ko
 ./meltdown/US/poc $pagesize $threshold
