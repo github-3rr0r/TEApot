@@ -64,5 +64,6 @@ chmod +x run.sh
 ./run.sh
 ```
 
-
-~~This project was originally call Transient Execution Attack Test Suite, but the abbreviation was really cursed. I've also tried TAT, a cute name, but full name without "execution" seems unreasonable. So after careful consideration, I decided to use "TEApot" as the name of the project. Both "pot" and "suite" are containers for something. ~~
+```shell
+# This project was originally call Transient Execution Attack Test Suite, but the abbreviation was really cursed. I've also tried TAT, a cute name, but full name without "execution" seems unreasonable. So after careful consideration, I decided to use "TEApot" as the name of the project. Both "pot" and "suite" are containers for something. 
+```
