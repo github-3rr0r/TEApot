@@ -20,12 +20,6 @@ char *victim_page;
 
 void main(int argc, char **argv)
 {
-    if (argc != 3)
-    {
-        printf("Usage\t: ./poc_* [pagesize] [threshold]\nExample\t: ./poc_x86 4096 200\n");
-        return;
-    }
-
     // 准备阶段
     PREPARE();
 
@@ -72,7 +66,7 @@ void main(int argc, char **argv)
 
     // Flush our shared memory
     flush_shared_memory();
-    int passed_count = 0;
+    
     for (int r = 0; r < MAX_TRY_TIMES; r++)
     {
         // Load data into the cache and fence

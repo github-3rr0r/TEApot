@@ -13,7 +13,13 @@
 #define MAX_TRY_TIMES      100000
 
 #define PREPARE() \
+    if (argc != 3)\
+    {\
+        printf("Usage\t: ./poc_* [pagesize] [threshold]\nExample\t: ./poc_x86 4096 200\n");\
+        return;\
+    }\
     sscanf(argv[1], "%ld", &pagesize);\
     sscanf(argv[2], "%ld", &CACHE_MISS);\
     mem = (char *)malloc(pagesize * 256);\
-    memset(mem, 1, pagesize * 256)
+    memset(mem, 1, pagesize * 256);\
+    int passed_count = 0
