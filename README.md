@@ -1,6 +1,6 @@
-# Transient Execution Attack Test Suite
+# Transient Execution Attack Pot
 
-TAT Suite(Transient execution Attack Test Suite) is a project used to evaluate whether your system is affected by Meltdown and Spectre. My goal is to build a easy-to-use(hard to implement) and configurable transient attack test suite.
+TEApot(Transient Execution Attack pot) is a project used to evaluate whether your system is affected by Meltdown and Spectre. My goal is to build a easy-to-use(hard to implement) and configurable transient attack test suite.
 
 This project is mainly based on project [Transient Fail](https://github.com/IAIK/transientfail) developed by [IAIK](https://www.iaik.tugraz.at/). More information will be found on their paper [A Systematic Evaluation of Transient Execution Attacks and Defenses](http://cc0x1f.net/publications/transient_sytematization.pdf).
 
@@ -48,7 +48,7 @@ Meltdown-like and Spectre-like vulnerabilities, more information will be also fo
 1. Clone this repository
 
 ```shell
-git clone 
+git clone https://github.com/Mashiro1995/TEApot.git
 ```
 
 2. Make
@@ -63,3 +63,6 @@ make
 chmod +x run.sh
 ./run.sh
 ```
+
+
+~~This project was originally call Transient Execution Attack Test Suite, but the abbreviation was really cursed. I've also tried TAT, a cute name, but full name without "execution" seems unreasonable. So after careful consideration, I decided to use "TEApot" as the name of the project. Both "pot" and "suite" are containers for something. ~~
