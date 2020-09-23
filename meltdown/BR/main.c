@@ -62,12 +62,12 @@ void fault_handler(int no)
 
 int __attribute__((aligned(0x1000))) dummy;
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     if (argc != 3)
     {
         printf("Usage\t: ./poc_* [pagesize] [threshold]\nExample\t: ./poc_x86 4096 200\n");
-        return;
+        return 0;
     }
     sscanf(argv[1], "%d", &pagesize);
     sscanf(argv[2], "%d", &CACHE_MISS);

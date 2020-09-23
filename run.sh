@@ -25,6 +25,18 @@ printf "Terminating victim process for Meltdown_NM...\n"
 kill $victimpid > /dev/null 1>&1
 sleep 1
 printf "Done...\n\n"
+# meltdown_p
+sudo insmod libpte/module/pteditor.ko
+./meltdown/P/poc $pagesize $threshold
+sudo rmmod libpte/module/pteditor.ko
+# meltdown_pk
+./meltdown/PK/poc $pagesize $threshold
+# meltdown_rw
+./meltdown/RW/poc $pagesize $threshold
+# meltdown_ss
+./meltdown/SS/poc $pagesize $threshold
+# meltdown_ud
+./meltdown/UD/poc $pagesize $threshold
 # meltdown_us
 sudo insmod libpte/module/pteditor.ko
 ./meltdown/US/poc $pagesize $threshold

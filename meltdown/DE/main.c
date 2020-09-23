@@ -9,7 +9,7 @@
 #include "libcache/cache.h"
 #include "lib/global.h"
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     PREPARE();
     printf("Meltdown_DE Begins...\n");
@@ -45,5 +45,5 @@ void main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_DE: Not Vulnerable\n" ANSI_COLOR_RESET);
     }
-    printf("Meltdown_DE done!\n\n");
+    printf("Meltdown_DE Done!\n\n");
 }

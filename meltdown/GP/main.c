@@ -9,7 +9,7 @@
 #include "libcache/cache.h"
 #include "lib/global.h"
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     PREPARE();
     printf("Meltdown_GP Begins...\n");
@@ -75,5 +75,5 @@ void main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_GP: Not Vulnerable\n" ANSI_COLOR_RESET);
     }
-    printf("Meltdown_GP done!\n\n");
+    printf("Meltdown_GP Done!\n\n");
 }

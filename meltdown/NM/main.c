@@ -13,7 +13,7 @@
 #include "libcache/cache.h"
 #include "lib/global.h"
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     PREPARE();
     printf("Meltdown_NM Begins!\n");
@@ -45,7 +45,6 @@ void main(int argc, char **argv)
         }
         // printf("%c ", cache_decode());
     }
-    printf("%d\n", passed_count);
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
         printf(ANSI_COLOR_RED "Meltdown_NM: Vulnerable\n" ANSI_COLOR_RESET);

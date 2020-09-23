@@ -21,7 +21,7 @@
     __asm__("pushf\nandl $~(0x40000),(%rsp)\npopf")
 #endif
 
-void main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     // 准备阶段
     PREPARE();

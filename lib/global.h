@@ -16,7 +16,7 @@
     if (argc != 3)\
     {\
         printf("Usage\t: ./poc_* [pagesize] [threshold]\nExample\t: ./poc_x86 4096 200\n");\
-        return;\
+        return 0;\
     }\
     sscanf(argv[1], "%ld", &pagesize);\
     sscanf(argv[2], "%ld", &CACHE_MISS);\
