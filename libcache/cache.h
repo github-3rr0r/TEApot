@@ -485,7 +485,7 @@ char cache_decode()
         if (flush_reload(mem + mix_i * pagesize))
         {
             // return (char)mix_i;
-            if (mix_i >= 'A' && mix_i <= 'Z')
+            if (mix_i >= ' ' && mix_i <= '~')
             {
                 return (char)mix_i;
             }
