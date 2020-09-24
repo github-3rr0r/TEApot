@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     sscanf(argv[1], "%d", &pagesize);
     sscanf(argv[2], "%d", &CACHE_MISS);
     int passed_count = 0;
-    printf("Meltdown-BR Begins!\n");
+    printf("Meltdown_BR Begins!\n");
     int status, i;
     char c = 'X';
     // Install signal handler

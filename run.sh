@@ -42,3 +42,16 @@ sudo insmod libpte/module/pteditor.ko
 ./meltdown/US/poc $pagesize $threshold
 sudo rmmod libpte/module/pteditor.ko
 
+# spectre_btb
+# spectre_btb_ca_ip
+./spectre/BTB/ca_ip/poc $pagesize $threshold
+wait $!
+sleep 3
+# spectre_btb_ca_oop
+cd spectre/BTB/ca_oop
+./exploit.sh
+cd ../../../
+# spectre_btb_sa_ip
+./spectre/BTB/sa_ip/poc $pagesize $threshold
+# spectre_btb_sa_oop
+./spectre/BTB/sa_oop/poc $pagesize $threshold

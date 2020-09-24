@@ -1,6 +1,17 @@
-all: libcache/get libpte/mod meltdowns
+all: libcache/get libpte/mod meltdowns spectres
 
 meltdowns: AC BR DE GP NM P PK RW SS UD US
+
+spectres: BTBs RSBs PHTs STL
+
+BTBs: BTB_ca_ip BTB_ca_oop BTB_sa_ip BTB_sa_oop
+
+RSBs: RSB_ca_ip RSB_ca_oop RSB_sa_ip RSB_sa_oop
+
+PHTs: PHT_ca_ip PHT_ca_oop PHT_sa_ip PHT_sa_oop
+
+STL:
+
 
 libcache/get: 
 	cd libcache && make
@@ -41,6 +52,34 @@ UD:
 US:
 	cd meltdown/US && make x86
 
+BTB_ca_ip:
+	cd spectre/BTB/ca_ip && make x86
+
+BTB_ca_oop:
+	cd spectre/BTB/ca_oop && make
+
+BTB_sa_ip:
+	cd spectre/BTB/sa_ip && make x86
+
+BTB_sa_oop:
+	cd spectre/BTB/sa_oop && make x86
+
+RSB_ca_ip:
+
+RSB_ca_oop:
+
+RSB_sa_ip:
+
+RSB_sa_oop:
+
+PHT_ca_ip:
+
+PHT_ca_oop:
+
+PHT_sa_ip:
+
+PHT_sa_oop:
+
 clean:
 	cd libcache && make clean
 	cd libpte && make clean
@@ -55,3 +94,7 @@ clean:
 	cd meltdown/SS && make clean
 	cd meltdown/UD && make clean
 	cd meltdown/US && make clean
+	cd spectre/BTB/ca_ip && make clean
+	cd spectre/BTB/ca_oop && make clean
+	cd spectre/BTB/sa_ip && make clean
+	cd spectre/BTB/sa_oop && make clean

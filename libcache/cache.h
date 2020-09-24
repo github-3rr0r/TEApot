@@ -79,7 +79,7 @@ void flush_shared_memory();
 // TSC是Time Stamp Counter寄存器，每个时钟周期加一，可用于计时
 uint64_t rdtsc()
 {
-    uint64_t result;
+    uint64_t a, d;
     // 串行化之前的读写操作，同步作用
     asm volatile("mfence");
 // 这里有两种方式获取时间
@@ -88,14 +88,15 @@ uint64_t rdtsc()
 // rdtsc是一条读取TSC的指令，对于64位的处理器，该指令可以将64位TSC的值放入寄存器
 #if USE_RDTSCP
     asm volatile("rdtscp"
-                 : "=A"(result)::"rcx");
+                 : "=a"(a), "=d"(d)::"rcx");
 #else
     asm volatile("rdtsc"
-                 : "=A"(result));
+                 : "=a"(a), "=d"(d));
 #endif
+    a = (d << 32) | a;
     // 同步
     asm volatile("mfence");
-    return result;
+    return a;
 }
 
 // flush指定地址的缓存
@@ -507,8 +508,8 @@ void cache_decode_array(char *leaked, int index)
                 leaked[index] = mix_i;
                 // printf("\x1b[33m%s\x1b[0m\r", leaked);
             }
-    //         fflush(stdout);
-    //   sched_yield();
+            //         fflush(stdout);
+            //   sched_yield();
         }
     }
 }
