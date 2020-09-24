@@ -10,8 +10,7 @@ RSBs: RSB_ca_ip RSB_ca_oop RSB_sa_ip RSB_sa_oop
 
 PHTs: PHT_ca_ip PHT_ca_oop PHT_sa_ip PHT_sa_oop
 
-STL:
-
+STL: STL_stl
 
 libcache/get: 
 	cd libcache && make
@@ -65,20 +64,31 @@ BTB_sa_oop:
 	cd spectre/BTB/sa_oop && make x86
 
 RSB_ca_ip:
+	cd spectre/RSB/ca_ip && make x86
 
 RSB_ca_oop:
+	cd spectre/RSB/ca_oop && make x86
 
 RSB_sa_ip:
+	cd spectre/RSB/sa_ip && make x86
 
 RSB_sa_oop:
+	cd spectre/RSB/sa_oop && make x86
 
 PHT_ca_ip:
+	cd spectre/PHT/ca_ip && make x86
 
 PHT_ca_oop:
+	cd spectre/PHT/ca_oop && make x86
 
 PHT_sa_ip:
+	cd spectre/PHT/sa_ip && make x86
 
 PHT_sa_oop:
+	cd spectre/PHT/sa_oop && make x86
+
+STL_stl:
+	cd spectre/STL && make x86
 
 clean:
 	cd libcache && make clean
@@ -98,3 +108,12 @@ clean:
 	cd spectre/BTB/ca_oop && make clean
 	cd spectre/BTB/sa_ip && make clean
 	cd spectre/BTB/sa_oop && make clean
+	cd spectre/RSB/ca_ip && make clean
+	cd spectre/RSB/ca_oop && make clean
+	cd spectre/RSB/sa_ip && make clean
+	cd spectre/RSB/sa_oop && make clean
+	cd spectre/PHT/ca_ip && make clean
+	cd spectre/PHT/ca_oop && make clean
+	cd spectre/PHT/sa_ip && make clean
+	cd spectre/PHT/sa_oop && make clean
+	cd spectre/STL && make clean
