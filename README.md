@@ -22,9 +22,42 @@ Meltdown-like and Spectre-like vulnerabilities, more information will be also fo
 
 ### Configurable features
 
-1. Which vulnerbility do you want to test?
-2. Do you want to output the PoC code that successfully exploited the vulnerability?
-3. To be added...
+#### Select vulnerbilities
+
+This test suite allows you to select the vulnerabilities to be tested at first.
+
+Following combinations are supported:
+
+| Options     | Vulnerabilities to be tested    |
+| ----------- | ------------------------------- |
+| all         | All vulnerabilities             |
+| meltdown    | All Meltdown vulnerabilities    |
+| spectre     | All Spectre vulnerabilities     |
+| spectre_btb | All Spectre_BTB vulnerabilities |
+| spectre_pht | All Spectre_PHT vulnerabilities |
+| spectre_rsb | All Spectre_RSB vulnerabilities |
+
+You can also use multi_parameters to select specific vulnerabilities and separate them with spaces:
+
+| Options | Vulnerabilities to be tested | Options    | Vulnerabilities to be tested |
+| ------- | ---------------------------- | ---------- | ---------------------------- |
+| ac      | Meltdown_AC                  | btb_sa_ip  | Spectre_BTB_sa_ip            |
+| br      | Meltdown_BR                  | btb_sa_oop | Spectre_BTB_sa_oop           |
+| de      | Meltdown_DE                  | btb_ca_ip  | Spectre_BTB_ca_ip            |
+| gp      | Meltdown_GP                  | btb_ca_oop | Spectre_BTB_ca_oop           |
+| nm      | Meltdown_NM                  | pht_sa_ip  | Spectre_PHT_sa_ip            |
+| p       | Meltdown_P                   | pht_sa_oop | Spectre_PHT_sa_oop           |
+| pk      | Meltdown_PK                  | pht_ca_ip  | Spectre_PHT_ca_ip            |
+| rw      | Meltdown_RW                  | pht_ca_oop | Spectre_PHT_ca_oop           |
+| ss      | Meltdown_SS                  | rsb_sa_ip  | Spectre_RSB_sa_ip            |
+| ud      | Meltdown_UD                  | rsb_sa_oop | Spectre_RSB_sa_oop           |
+| us      | Meltdown_US                  | rsb_ca_ip  | Spectre_RSB_ca_ip            |
+| stl     | Spectre_STL                  | rsb_ca_oop | Spectre_RSB_ca_oop           |
+
+Default option is "all" for testing all vulnerabilities.
+
+#### Output valid PoCs
+#### To be added...
 
 ## Repository Structure
 
@@ -42,7 +75,13 @@ Meltdown-like and Spectre-like vulnerabilities, more information will be also fo
 0. Some preparation
 
 ```shell
-# to-do
+sudo apt-get install libelf-dev build-essential pkg-config bison flex libssl-dev libelf-dev bc
+sudo apt-get purge libc6-dev
+sudo apt-get install libc6-dev
+sudo apt-get install libc6-dev-i386
+sudo apt-get install build-essential
+sudo apt-get install seccomp
+sudo apt-get install libseccomp-dev
 ```
 
 1. Clone this repository
