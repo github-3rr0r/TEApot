@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_P: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_P done!\n\n");
-        return -1;
+        exit(-1);
     }
 
     // We need a shared mapping. One mapping gets P bit cleared..
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_P: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_P done!\n\n");
-        return -1;
+        exit(-1);
     }
 
     // Set memory objects size
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_P: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_P done!\n\n");
-        return -1;
+        exit(-1);
     }
 
     // Victim mapping that gets P bit cleared
@@ -83,16 +83,20 @@ int main(int argc, char **argv)
             passed_count++;
         }
     }
+    int exit_result = 0;
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
         printf(ANSI_COLOR_RED "Meltdown_P: Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_SUCCESS;
     }
     else
     {
         printf(ANSI_COLOR_GREEN "Meltdown_P: Not Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_FAILURE;
     }
     munmap(victim_page, pagesize);
     munmap(accessor, pagesize);
     ptedit_cleanup();
     printf("Meltdown_P Done!\n\n");
+    exit(exit_result);
 }

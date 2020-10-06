@@ -75,19 +75,23 @@ int main(int argc, char **argv)
     {
         secret = '.';
         attacker();
-        exit(0);
+        exit(1);
     }
     else
     {
         secret = SECRET;
+        int exit_result = 0;
         if (victim() == SECRET)
         {
             printf(ANSI_COLOR_RED "Spectre_RSB_CA_IP: Vulnerable\n" ANSI_COLOR_RESET);
+            exit_result = EXIT_SUCCESS;
         }
         else
         {
             printf(ANSI_COLOR_GREEN "Spectre_RSB_CA_IP: Not Vulnerable\n" ANSI_COLOR_RESET);
+            exit_result = EXIT_FAILURE;
         }
+        printf("Spectre_RSB_ca_ip Done!\n\n");
+        exit(exit_result);
     }
-    printf("Spectre_RSB_ca_ip Done!\n\n");
 }

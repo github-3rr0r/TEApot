@@ -83,6 +83,7 @@ int main(int argc, const char **argv)
             cache_decode_array(leaked, j);
         }
     }
+    int exit_result = 0;
     if (pid != 0)
     {
         for (int i = 0; i < sizeof(SECRET) - 1; i++)
@@ -95,15 +96,17 @@ int main(int argc, const char **argv)
         if (passed_count > 0)
         {
             printf(ANSI_COLOR_RED "Spectre_PHT_ca_ip: Vulnerable\n" ANSI_COLOR_RESET);
+            exit_result = EXIT_SUCCESS;
         }
         else
         {
             printf(ANSI_COLOR_GREEN "Spectre_PHT_ca_ip: Not Vulnerable\n" ANSI_COLOR_RESET);
+            exit_result = EXIT_FAILURE;
         }
         printf("Spectre_PHT_ca_ip Done!\n\n");
     }
     else
     {
-        exit(0);
+        exit(1);
     }
 }

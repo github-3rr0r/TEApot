@@ -99,7 +99,7 @@ int main(int argc, char **argv)
 {
     if (argc < 3)
     {
-        exit(1);
+        exit(-1);
     }
 
     printf("Spectre_BTB_ca_oop Begins...\n");
@@ -127,7 +127,7 @@ int main(int argc, char **argv)
 
     pid_t pid = fork();
     assert(pid != -1);
-    attacker = pid == 0;
+    attacker = pid != 0;
 
     if (!attacker)
     {
@@ -153,24 +153,26 @@ int main(int argc, char **argv)
         size_t trys = 0;
         size_t hits = 0;
         size_t sucs = 0;
+        int exit_result = 0;
         while (1)
         {
-            if (trys % MAX_TRY_TIMES == 0)
+            if (trys == MAX_TRY_TIMES)
             {
                 if (sucs * 10 > hits)
                 {
                     printf(ANSI_COLOR_RED "Spectre_BTB_CA_OOP: Vulnerable\n" ANSI_COLOR_RESET);
                     kill(pid ? pid : getppid(), SIGKILL);
                     printf("Spectre_BTB_ca_oop Done!\n\n");
-                    return 0;
+                    exit_result = EXIT_SUCCESS;
                 }
                 else
                 {
                     printf(ANSI_COLOR_GREEN "Spectre_BTB_CA_OOP: Not Vulnerable\n" ANSI_COLOR_RESET);
                     kill(pid ? pid : getppid(), SIGKILL);
                     printf("Spectre_BTB_ca_oop Done!\n\n");
-                    return 0;
+                    exit_result = EXIT_FAILURE;
                 }
+                exit(exit_result);
             }
             trys++;
             for (int i = 0; i < 100; i++)
@@ -199,8 +201,5 @@ int main(int argc, char **argv)
             call_addr(jump);
         }
     }
-
-    kill(pid ? pid : getppid(), SIGKILL);
-
     return 0;
 }

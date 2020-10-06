@@ -45,13 +45,17 @@ int main(int argc, char **argv)
         }
         // printf("%c ", cache_decode());
     }
+    int exit_result = 0;
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
         printf(ANSI_COLOR_RED "Meltdown_NM: Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_SUCCESS;
     }
     else
     {
         printf(ANSI_COLOR_GREEN "Meltdown_NM: Not Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_FAILURE;
     }
     printf("Meltdown_NM Done!\n");
+    exit(exit_result);
 }

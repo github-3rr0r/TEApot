@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_US: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_US done!\n\n");
-        return -1;
+        exit(-1);
     }
 
     // We need a shared mapping. One mapping gets US bit cleared for unauthorized access.
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_US: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_US done!\n\n");
-        return -1;
+        exit(-1);
     }
 
     // Set memory objects size
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_US: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_US done!\n\n");
-        return -1;
+        exit(-1);
     }
 
     // Victim mapping that gets US bit cleared
@@ -89,18 +89,22 @@ int main(int argc, char **argv)
             passed_count++;
         }
     }
+    int exit_result = 0;
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
         // printf("Success rate: %lf\n", (double)passed_count / MAX_TRY_TIMES);
         printf(ANSI_COLOR_RED "Meltdown_US: Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_SUCCESS;
     }
     else
     {
         printf(ANSI_COLOR_GREEN "Meltdown_US: Not Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_FAILURE;
     }
     munmap(victim_page, pagesize);
     munmap(accessor, pagesize);
     shm_unlink("shared_mapping");
     ptedit_cleanup();
     printf("Meltdown_US Done!\n\n");
+    exit(exit_result);
 }

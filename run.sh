@@ -136,7 +136,7 @@ done
 ########################
 
 # Get pagesize and threshold
-printf "\nInitial tests...\n"
+printf "\nInitialize tests...\n"
 pagesize=$(./libcache/get_pagesize)
 threshold=$(./libcache/get_threshold)
 printf "\033[32m[OK]\033[0m pagesize = $pagesize, threshold = $threshold\n\n"
@@ -145,19 +145,23 @@ printf "\033[32m[OK]\033[0m pagesize = $pagesize, threshold = $threshold\n\n"
 # meltdown_ac
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $ac == 1 ]]; then
     ./meltdown/AC/poc $pagesize $threshold
+    echo $?
 fi
 # meltdown_br
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $br == 1 ]]; then
     ./meltdown/BR/poc $pagesize $threshold
+    echo $?
 fi
 # meltdown_de
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $de == 1 ]]; then
     ./meltdown/DE/poc $pagesize $threshold
+    echo $?
 fi
 # meltdown_gp
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $gp == 1 ]]; then
     sudo insmod libcr3/kernel_module.ko
     ./meltdown/GP/poc $pagesize $threshold
+    echo $?
     sudo rmmod libcr3/kernel_module.ko
 fi
 # meltdown_nm
@@ -168,6 +172,7 @@ if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $nm == 1 ]]; then
     sleep 3
     printf "Done...\n"
     taskset 0x2 ./meltdown/NM/poc $pagesize $threshold
+    echo $?
     printf "Terminating victim process for Meltdown_NM...\n"
     kill $victimpid >/dev/null 1>&1
     sleep 1
@@ -177,28 +182,34 @@ fi
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $p == 1 ]]; then
     sudo insmod libpte/module/pteditor.ko
     ./meltdown/P/poc $pagesize $threshold
+    echo $?
     sudo rmmod libpte/module/pteditor.ko
 fi
 # meltdown_pk
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $pk == 1 ]]; then
     ./meltdown/PK/poc $pagesize $threshold
+    echo $?
 fi
 # meltdown_rw
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $rw == 1 ]]; then
     ./meltdown/RW/poc $pagesize $threshold
+    echo $?
 fi
 # meltdown_ss
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $ss == 1 ]]; then
     ./meltdown/SS/poc $pagesize $threshold
+    echo $?
 fi
 # meltdown_ud
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $ud == 1 ]]; then
     ./meltdown/UD/poc $pagesize $threshold
+    echo $?
 fi
 # meltdown_us
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $us == 1 ]]; then
     sudo insmod libpte/module/pteditor.ko
     ./meltdown/US/poc $pagesize $threshold
+    echo $?
     sudo rmmod libpte/module/pteditor.ko
 fi
 
@@ -206,6 +217,7 @@ fi
 # spectre_btb_ca_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_ca_ip == 1 ]]; then
     ./spectre/BTB/ca_ip/poc $pagesize $threshold
+    echo $?
     wait $!
     sleep 3
 fi
@@ -213,56 +225,68 @@ fi
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_ca_oop == 1 ]]; then
     cd spectre/BTB/ca_oop
     ./exploit.sh
+    echo $?
     cd ../../../
 fi
 # spectre_btb_sa_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_sa_ip == 1 ]]; then
     ./spectre/BTB/sa_ip/poc $pagesize $threshold
+    echo $?
 fi
 # spectre_btb_sa_oop
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_sa_oop == 1 ]]; then
     ./spectre/BTB/sa_oop/poc $pagesize $threshold
+    echo $?
 fi
 
 # spectre_pht
 # spectre_pht_ca_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_ca_ip == 1 ]]; then
     ./spectre/PHT/ca_ip/poc $pagesize $threshold
+    echo $?
 fi
 # spectre_pht_ca_oop
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_ca_oop == 1 ]]; then
     ./spectre/PHT/ca_oop/poc $pagesize $threshold
+    echo $?
 fi
 # spectre_pht_sa_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_sa_ip == 1 ]]; then
     ./spectre/PHT/sa_ip/poc $pagesize $threshold
+    echo $?
 fi
 # spectre_pht_sa_oop
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_sa_oop == 1 ]]; then
     ./spectre/PHT/sa_oop/poc $pagesize $threshold
+    echo $?
 fi
 
 # spectre_rsb
 # spectre_rsb_ca_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_ca_ip == 1 ]]; then
     ./spectre/RSB/ca_ip/poc $pagesize $threshold
+    echo $?
 fi
 # spectre_rsb_ca_oop
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_ca_oop == 1 ]]; then
     ./spectre/RSB/ca_oop/poc $pagesize $threshold
+    echo $?
 fi
 # spectre_rsb_sa_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_sa_ip == 1 ]]; then
     ./spectre/RSB/sa_ip/poc $pagesize $threshold
+    echo $?
 fi
 # spectre_rsb_sa_oop
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_sa_oop == 1 ]]; then
     ./spectre/RSB/sa_oop/poc $pagesize $threshold
+    echo $?
 fi
 
 # spectre_stl
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $stl == 1 ]]; then
     ./spectre/STL/poc $pagesize $threshold
+    echo $?
 fi
 printf "\033[32m[OK]\033[0m All tests done!\n"
 

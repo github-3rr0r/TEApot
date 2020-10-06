@@ -12,11 +12,14 @@
 
 #define MAX_TRY_TIMES      100000
 
+#define POC_ERROR          -1
+
+
 #define PREPARE() \
     if (argc != 3)\
     {\
-        printf("Usage\t: ./poc_* [pagesize] [threshold]\nExample\t: ./poc_x86 4096 200\n");\
-        return 0;\
+        printf("Usage\t: ./poc [pagesize] [threshold]\nExample\t: ./poc 4096 200\n");\
+        exit(-1);\
     }\
     sscanf(argv[1], "%ld", &pagesize);\
     sscanf(argv[2], "%ld", &CACHE_MISS);\

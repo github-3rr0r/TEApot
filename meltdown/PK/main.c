@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_PK done!\n\n");
-        return 0;
+        exit(-1);
     }
 
     // Put some random data into the page (still OK to touch)
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_PK done!\n\n");
-        return 0;
+        exit(-1);
     }
 
     // Enable access to any memory with "pkey" set,
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_PK done!\n\n");
-        return 0;
+        exit(-1);
     }
 
     // Set the protection key on "buffer".
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_PK done!\n\n");
-        return 0;
+        exit(-1);
     }
 
     printf("Buffer: %d\n", *buffer);
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
     {
         printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
         printf("Meltdown_PK done!\n\n");
-        return 0;
+        exit(-1);
     }
 
     // flush memory before access
@@ -109,17 +109,21 @@ int main(int argc, char **argv)
             passed_count++;
         }
     }
+    int exit_result = 0;
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
         printf(ANSI_COLOR_RED "Meltdown_PK: Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_SUCCESS;
     }
     else
     {
         printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_FAILURE;
     }
     printf("Meltdown_PK Done!\n\n");
 
     munmap(buffer, pagesize);
     // Free protection key
     pkey_free(pkey);
+    exit(exit_result);
 }

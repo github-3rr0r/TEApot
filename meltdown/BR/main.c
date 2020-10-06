@@ -66,8 +66,8 @@ int main(int argc, char **argv)
 {
     if (argc != 3)
     {
-        printf("Usage\t: ./poc_* [pagesize] [threshold]\nExample\t: ./poc_x86 4096 200\n");
-        return 0;
+        printf("Usage\t: ./poc [pagesize] [threshold]\nExample\t: ./poc 4096 200\n");
+        exit(-1);
     }
     sscanf(argv[1], "%d", &pagesize);
     sscanf(argv[2], "%d", &CACHE_MISS);
@@ -168,13 +168,17 @@ int main(int argc, char **argv)
             passed_count++;
         }
     }
+    int exit_result = 0;
     if (passed_count == 4)
     {
         printf(ANSI_COLOR_RED "Meltdown_BR: Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_SUCCESS;
     }
     else
     {
         printf(ANSI_COLOR_GREEN "Meltdown_BR: Not Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_FAILURE;
     }
     printf("Meltdown_BR Done!\n\n");
+    exit(exit_result);
 }

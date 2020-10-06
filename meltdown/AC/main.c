@@ -71,16 +71,19 @@ int main(int argc, char **argv)
             passed_count++;
         }
     }
-
+    int exit_result = 0;
     // printf("%lf\n", (double)passed_count/MAX_TRY_TIMES);
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
         printf(ANSI_COLOR_RED "Meltdown_AC: Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_SUCCESS;
     }
     else
     {
         printf(ANSI_COLOR_GREEN "Meltdown_AC: Not Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_FAILURE;
     }
     // clean
     printf("Meltdown_AC Done!\n\n");
+    exit(exit_result);
 }

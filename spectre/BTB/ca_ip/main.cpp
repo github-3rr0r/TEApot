@@ -87,7 +87,7 @@ int main(int argc, char **argv)
     for (int i = 0; i < MAX_TRY_TIMES; i++)
     {
         // Parent is doing the mistraining
-        if (!is_child)
+        if (is_child)
         {
             nospec();
             // train for fish
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
         mfence();
 
         // Child is leaking data
-        if (is_child)
+        if (!is_child)
         {
             nospec();
             // Leak bird secret
@@ -118,18 +118,21 @@ int main(int argc, char **argv)
             }
         }
     }
-    if (is_child)
+    if (!is_child)
     {
-
+        int exit_result = 0;
         if ((double)passed_count / MAX_TRY_TIMES > 0.3)
         {
             printf(ANSI_COLOR_RED "Spectre_BTB_ca_ip: Vulnerable\n" ANSI_COLOR_RESET);
+            exit_result = EXIT_SUCCESS;
         }
         else
         {
             printf(ANSI_COLOR_GREEN "Spectre_BTB_ca_ip: Not Vulnerable\n" ANSI_COLOR_RESET);
+            exit_result = EXIT_FAILURE;
         }
         printf("Spectre_BTB_ca_ip Done!\n\n");
-        exit(-1);
+        exit(exit_result);
     }
+    
 }

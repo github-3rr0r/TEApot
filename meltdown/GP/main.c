@@ -61,6 +61,7 @@ int main(int argc, char **argv)
         // printf("%x", cache_decode());
     }
 
+    int exit_result = 0;
     // temp = system("sudo rmmod ../../libcr3/kernel_module.ko");
     if (passed_count > 0)
     {
@@ -70,10 +71,13 @@ int main(int argc, char **argv)
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
         printf(ANSI_COLOR_RED "Meltdown_GP: Perhaps Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_SUCCESS;
     }
     else
     {
         printf(ANSI_COLOR_GREEN "Meltdown_GP: Not Vulnerable\n" ANSI_COLOR_RESET);
+        exit_result = EXIT_FAILURE;
     }
     printf("Meltdown_GP Done!\n\n");
+    exit(exit_result);
 }

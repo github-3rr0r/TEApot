@@ -116,18 +116,22 @@ int main(int argc, const char **argv)
                 passed_count++;
             }
         }
+        int exit_result = 0;
         if (passed_count > 0)
         {
             printf(ANSI_COLOR_RED "Spectre_PHT_ca_oop: Vulnerable\n" ANSI_COLOR_RESET);
+            exit_result = EXIT_SUCCESS;
         }
         else
         {
             printf(ANSI_COLOR_GREEN "Spectre_PHT_ca_oop: Not Vulnerable\n" ANSI_COLOR_RESET);
+            exit_result = EXIT_FAILURE;
         }
         printf("Spectre_PHT_ca_oop Done!\n\n");
+        exit(exit_result);
     }
     else
     {
-        exit(0);
+        exit(1);
     }
 }
