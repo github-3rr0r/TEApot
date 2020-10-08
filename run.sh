@@ -24,7 +24,8 @@ You can also use multi_parameters to select specific vulnerabilities and separat
 | ss      | Meltdown_SS                  | rsb_sa_ip  | Spectre_RSB_sa_ip            |
 | ud      | Meltdown_UD                  | rsb_sa_oop | Spectre_RSB_sa_oop           |
 | us      | Meltdown_US                  | rsb_ca_ip  | Spectre_RSB_ca_ip            |
-| stl     | Spectre_STL                  | rsb_ca_oop | Spectre_RSB_ca_oop           |
+|         |                              | rsb_ca_oop | Spectre_RSB_ca_oop           |
+|         |                              | stl        | Spectre_STL                  |
 
 \033[32m[Input]\033[0m Please select the vulnerabilities to be tested (default all): "
 read vuls
@@ -33,35 +34,35 @@ arr_vuls=($vuls)
 if [[ ${#arr_vuls[@]} == 0 ]]; then
     arr_vuls="all"
 fi
-all=0
-meltdown=0
-spectre=0
-btb=0
-pht=0
-rsb=0
-ac=0
-br=0
-de=0
-gp=0
-nm=0
-p=0
-pk=0
-rw=0
-ss=0
-ud=0
-us=0
-btb_sa_ip=0
-btb_sa_oop=0
-btb_ca_ip=0
-btb_ca_oop=0
-pht_sa_ip=0
-pht_sa_oop=0
-pht_ca_ip=0
-pht_ca_oop=0
-rsb_sa_ip=0
-rsb_sa_oop=0
-rsb_ca_ip=0
-rsb_ca_oop=0
+all=-1
+meltdown=-1
+spectre=-1
+btb=-1
+pht=-1
+rsb=-1
+ac=-1
+br=-1
+de=-1
+gp=-1
+nm=-1
+p=-1
+pk=-1
+rw=-1
+ss=-1
+ud=-1
+us=-1
+btb_sa_ip=-1
+btb_sa_oop=-1
+btb_ca_ip=-1
+btb_ca_oop=-1
+pht_sa_ip=-1
+pht_sa_oop=-1
+pht_ca_ip=-1
+pht_ca_oop=-1
+rsb_sa_ip=-1
+rsb_sa_oop=-1
+rsb_ca_ip=-1
+rsb_ca_oop=-1
 for vul in ${arr_vuls[@]}; do
     if [[ $vul == "all" ]]; then
         all=1
@@ -131,12 +132,16 @@ for vul in ${arr_vuls[@]}; do
 done
 
 # Choose whether to output PoC
-########################
-# To-do
-########################
+printf "\n\033[32m[Input]\033[0m Please choose whether to output successful PoCs(default no)[Y/N]: "
+read poc_input
+if [[ $poc_input == 'y' ]] || [[ $poc_input == 'Y' ]]; then
+    output_poc=1
+else
+    output_poc=0
+fi
 
 # Get pagesize and threshold
-printf "\nInitialize tests...\n"
+printf "\n\nInitialize tests...\n"
 pagesize=$(./libcache/get_pagesize)
 threshold=$(./libcache/get_threshold)
 printf "\033[32m[OK]\033[0m pagesize = $pagesize, threshold = $threshold\n\n"
@@ -145,23 +150,23 @@ printf "\033[32m[OK]\033[0m pagesize = $pagesize, threshold = $threshold\n\n"
 # meltdown_ac
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $ac == 1 ]]; then
     ./meltdown/AC/poc $pagesize $threshold
-    echo $?
+    ac=$?
 fi
 # meltdown_br
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $br == 1 ]]; then
     ./meltdown/BR/poc $pagesize $threshold
-    echo $?
+    br=$?
 fi
 # meltdown_de
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $de == 1 ]]; then
     ./meltdown/DE/poc $pagesize $threshold
-    echo $?
+    de=$?
 fi
 # meltdown_gp
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $gp == 1 ]]; then
     sudo insmod libcr3/kernel_module.ko
     ./meltdown/GP/poc $pagesize $threshold
-    echo $?
+    gp=$?
     sudo rmmod libcr3/kernel_module.ko
 fi
 # meltdown_nm
@@ -172,7 +177,7 @@ if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $nm == 1 ]]; then
     sleep 3
     printf "Done...\n"
     taskset 0x2 ./meltdown/NM/poc $pagesize $threshold
-    echo $?
+    nm=$?
     printf "Terminating victim process for Meltdown_NM...\n"
     kill $victimpid >/dev/null 1>&1
     sleep 1
@@ -182,34 +187,34 @@ fi
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $p == 1 ]]; then
     sudo insmod libpte/module/pteditor.ko
     ./meltdown/P/poc $pagesize $threshold
-    echo $?
+    p=$?
     sudo rmmod libpte/module/pteditor.ko
 fi
 # meltdown_pk
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $pk == 1 ]]; then
     ./meltdown/PK/poc $pagesize $threshold
-    echo $?
+    pk=$?
 fi
 # meltdown_rw
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $rw == 1 ]]; then
     ./meltdown/RW/poc $pagesize $threshold
-    echo $?
+    rw=$?
 fi
 # meltdown_ss
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $ss == 1 ]]; then
     ./meltdown/SS/poc $pagesize $threshold
-    echo $?
+    ss=$?
 fi
 # meltdown_ud
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $ud == 1 ]]; then
     ./meltdown/UD/poc $pagesize $threshold
-    echo $?
+    ud=$?
 fi
 # meltdown_us
 if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $us == 1 ]]; then
     sudo insmod libpte/module/pteditor.ko
     ./meltdown/US/poc $pagesize $threshold
-    echo $?
+    us=$?
     sudo rmmod libpte/module/pteditor.ko
 fi
 
@@ -217,7 +222,7 @@ fi
 # spectre_btb_ca_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_ca_ip == 1 ]]; then
     ./spectre/BTB/ca_ip/poc $pagesize $threshold
-    echo $?
+    btb_ca_ip=$?
     wait $!
     sleep 3
 fi
@@ -225,72 +230,289 @@ fi
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_ca_oop == 1 ]]; then
     cd spectre/BTB/ca_oop
     ./exploit.sh
-    echo $?
+    btb_ca_oop=$?
     cd ../../../
 fi
 # spectre_btb_sa_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_sa_ip == 1 ]]; then
     ./spectre/BTB/sa_ip/poc $pagesize $threshold
-    echo $?
+    btb_sa_ip=$?
 fi
 # spectre_btb_sa_oop
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_sa_oop == 1 ]]; then
     ./spectre/BTB/sa_oop/poc $pagesize $threshold
-    echo $?
+    btb_sa_oop=$?
 fi
 
 # spectre_pht
 # spectre_pht_ca_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_ca_ip == 1 ]]; then
     ./spectre/PHT/ca_ip/poc $pagesize $threshold
-    echo $?
+    pht_ca_ip=$?
 fi
 # spectre_pht_ca_oop
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_ca_oop == 1 ]]; then
     ./spectre/PHT/ca_oop/poc $pagesize $threshold
-    echo $?
+    pht_ca_oop=$?
 fi
 # spectre_pht_sa_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_sa_ip == 1 ]]; then
     ./spectre/PHT/sa_ip/poc $pagesize $threshold
-    echo $?
+    pht_sa_ip=$?
 fi
 # spectre_pht_sa_oop
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_sa_oop == 1 ]]; then
     ./spectre/PHT/sa_oop/poc $pagesize $threshold
-    echo $?
+    pht_sa_oop=$?
 fi
 
 # spectre_rsb
 # spectre_rsb_ca_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_ca_ip == 1 ]]; then
     ./spectre/RSB/ca_ip/poc $pagesize $threshold
-    echo $?
+    rsb_ca_ip=$?
 fi
 # spectre_rsb_ca_oop
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_ca_oop == 1 ]]; then
     ./spectre/RSB/ca_oop/poc $pagesize $threshold
-    echo $?
+    rsb_ca_oop=$?
 fi
 # spectre_rsb_sa_ip
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_sa_ip == 1 ]]; then
     ./spectre/RSB/sa_ip/poc $pagesize $threshold
-    echo $?
+    rsb_sa_ip=$?
 fi
 # spectre_rsb_sa_oop
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_sa_oop == 1 ]]; then
     ./spectre/RSB/sa_oop/poc $pagesize $threshold
-    echo $?
+    rsb_sa_oop=$?
 fi
 
 # spectre_stl
 if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $stl == 1 ]]; then
     ./spectre/STL/poc $pagesize $threshold
-    echo $?
+    stl=$?
 fi
 printf "\033[32m[OK]\033[0m All tests done!\n"
 
 # Output report
-##############
+result_n="\033[32mN\033[0m"
+result_y="\033[31mY\033[0m"
+result_e="\033[33mE\033[0m"
+
+if [[ $ac == 0 ]]; then
+    result_ac=$result_y
+elif [[ $ac == 1 ]]; then
+    result_ac=$result_n
+else
+    result_ac=$result_e
+fi
+
+if [[ $br == 0 ]]; then
+    result_br=$result_y
+elif [[ $br == 1 ]]; then
+    result_br=$result_n
+else
+    result_br=$result_e
+fi
+
+if [[ $de == 0 ]]; then
+    result_de=$result_y
+elif [[ $de == 1 ]]; then
+    result_de=$result_n
+else
+    result_de=$result_e
+fi
+
+if [[ $gp == 0 ]]; then
+    result_gp=$result_y
+elif [[ $gp == 1 ]]; then
+    result_gp=$result_n
+else
+    result_gp=$result_e
+fi
+
+if [[ $nm == 0 ]]; then
+    result_nm=$result_y
+elif [[ $nm == 1 ]]; then
+    result_nm=$result_n
+else
+    result_nm=$result_e
+fi
+
+if [[ $p == 0 ]]; then
+    result_p=$result_y
+elif [[ $p == 1 ]]; then
+    result_p=$result_n
+else
+    result_p=$result_e
+fi
+
+if [[ $pk == 0 ]]; then
+    result_pk=$result_y
+elif [[ $pk == 1 ]]; then
+    result_pk=$result_n
+else
+    result_pk=$result_e
+fi
+
+if [[ $rw == 0 ]]; then
+    result_rw=$result_y
+elif [[ $rw == 1 ]]; then
+    result_rw=$result_n
+else
+    result_rw=$result_e
+fi
+
+if [[ $ss == 0 ]]; then
+    result_ss=$result_y
+elif [[ $ss == 1 ]]; then
+    result_ss=$result_n
+else
+    result_ss=$result_e
+fi
+
+if [[ $ud == 0 ]]; then
+    result_ud=$result_y
+elif [[ $ud == 1 ]]; then
+    result_ud=$result_n
+else
+    result_ud=$result_e
+fi
+
+if [[ $us == 0 ]]; then
+    result_us=$result_y
+elif [[ $us == 1 ]]; then
+    result_us=$result_n
+else
+    result_us=$result_e
+fi
+
+if [[ $btb_sa_ip == 0 ]]; then
+    result_btb_sa_ip=$result_y
+elif [[ $btb_sa_ip == 1 ]]; then
+    result_btb_sa_ip=$result_n
+else
+    result_btb_sa_ip=$result_e
+fi
+
+if [[ $btb_sa_oop == 0 ]]; then
+    result_btb_sa_oop=$result_y
+elif [[ $btb_sa_oop == 1 ]]; then
+    result_btb_sa_oop=$result_n
+else
+    result_btb_sa_oop=$result_e
+fi
+
+if [[ $btb_ca_ip == 0 ]]; then
+    result_btb_ca_ip=$result_y
+elif [[ $btb_ca_ip == 1 ]]; then
+    result_btb_ca_ip=$result_n
+else
+    result_btb_ca_ip=$result_e
+fi
+
+if [[ $btb_ca_oop == 0 ]]; then
+    result_btb_ca_oop=$result_y
+elif [[ $btb_ca_oop == 1 ]]; then
+    result_btb_ca_oop=$result_n
+else
+    result_btb_ca_oop=$result_e
+fi
+
+if [[ $pht_sa_ip == 0 ]]; then
+    result_pht_sa_ip=$result_y
+elif [[ $pht_sa_ip == 1 ]]; then
+    result_pht_sa_ip=$result_n
+else
+    result_pht_sa_ip=$result_e
+fi
+
+if [[ $pht_sa_oop == 0 ]]; then
+    result_pht_sa_oop=$result_y
+elif [[ $pht_sa_oop == 1 ]]; then
+    result_pht_sa_oop=$result_n
+else
+    result_pht_sa_oop=$result_e
+fi
+
+if [[ $pht_ca_ip == 0 ]]; then
+    result_pht_ca_ip=$result_y
+elif [[ $pht_ca_ip == 1 ]]; then
+    result_pht_ca_ip=$result_n
+else
+    result_pht_ca_ip=$result_e
+fi
+
+if [[ $pht_ca_oop == 0 ]]; then
+    result_pht_ca_oop=$result_y
+elif [[ $pht_ca_oop == 1 ]]; then
+    result_pht_ca_oop=$result_n
+else
+    result_pht_ca_oop=$result_e
+fi
+
+if [[ $rsb_sa_ip == 0 ]]; then
+    result_rsb_sa_ip=$result_y
+elif [[ $rsb_sa_ip == 1 ]]; then
+    result_rsb_sa_ip=$result_n
+else
+    result_rsb_sa_ip=$result_e
+fi
+
+if [[ $rsb_sa_oop == 0 ]]; then
+    result_rsb_sa_oop=$result_y
+elif [[ $rsb_sa_oop == 1 ]]; then
+    result_rsb_sa_oop=$result_n
+else
+    result_rsb_sa_oop=$result_e
+fi
+
+if [[ $rsb_ca_ip == 0 ]]; then
+    result_rsb_ca_ip=$result_y
+elif [[ $rsb_ca_ip == 1 ]]; then
+    result_rsb_ca_ip=$result_n
+else
+    result_rsb_ca_ip=$result_e
+fi
+
+if [[ $rsb_ca_oop == 0 ]]; then
+    result_rsb_ca_oop=$result_y
+elif [[ $rsb_ca_oop == 1 ]]; then
+    result_rsb_ca_oop=$result_n
+else
+    result_rsb_ca_oop=$result_e
+fi
+
+if [[ $stl == 0 ]]; then
+    result_stl=$result_y
+elif [[ $stl == 1 ]]; then
+    result_stl=$result_n
+else
+    result_stl=$result_e
+fi
+printf "
+|                          REPORT                           |
+| --------------------------------------------------------- |
+| Meltdowns       | Results | Spectres            | Results |
+| --------------- | ------- | ------------------- | ------- |
+| Meltdown_AC     | $result_ac       | Spectre_BTB_sa_ip   | $result_btb_sa_ip       |
+| Meltdown_BR     | $result_br       | Spectre_BTB_sa_oop  | $result_btb_sa_oop       |
+| Meltdown_DE     | $result_de       | Spectre_BTB_ca_ip   | $result_btb_ca_ip       |
+| Meltdown_GP     | $result_gp       | Spectre_BTB_ca_oop  | $result_btb_ca_oop       |
+| Meltdown_NM     | $result_nm       | Spectre_PHT_sa_ip   | $result_pht_sa_ip       |
+| Meltdown_P      | $result_p       | Spectre_PHT_sa_oop  | $result_pht_sa_oop       |
+| Meltdown_PK     | $result_pk       | Spectre_PHT_ca_ip   | $result_pht_ca_ip       |
+| Meltdown_RW     | $result_rw       | Spectre_PHT_ca_oop  | $result_pht_ca_oop       |
+| Meltdown_SS     | $result_ss       | Spectre_RSB_sa_ip   | $result_rsb_sa_ip       |
+| Meltdown_UD     | $result_ud       | Spectre_RSB_sa_oop  | $result_rsb_sa_oop       |
+| Meltdown_US     | $result_us       | Spectre_RSB_ca_ip   | $result_rsb_ca_ip       |
+|                 |         | Spectre_RSB_ca_oop  | $result_rsb_ca_oop       |
+|                 |         | Spectre_STL         | $result_stl       |
+\033[32m[N]\033[0m: Not vulnerable; \033[31m[Y]\033[0m: Vulnerable; \033[33m[E]\033[0m: Error/Not tested
+"
+
+# Output PoCs
+#################
 # To-do
-##############
+#################
