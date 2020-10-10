@@ -491,6 +491,7 @@ elif [[ $stl == 1 ]]; then
 else
     result_stl=$result_e
 fi
+
 printf "
 |                          REPORT                           |
 | --------------------------------------------------------- |
@@ -514,5 +515,200 @@ printf "
 
 # Output PoCs
 #################
-# To-do
+valid_count=1
+if [[ $output_poc == 1 ]]; then
+    echo -e "# Valid PoCs" >>report.md 2>&1
+    if [[ $ac == 0 ]]; then
+        echo -e "$valid_count. Meltdown-AC" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat meltdown/AC/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $br == 0 ]]; then
+        echo -e "$valid_count. Meltdown-BR" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat meltdown/BR/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $de == 0 ]]; then
+        echo -e "$valid_count. Meltdown-DE" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat meltdown/DE/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $gp == 0 ]]; then
+        echo -e "$valid_count. Meltdown-GP" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat meltdown/GP/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $nm == 0 ]]; then
+        echo -e "$valid_count. Meltdown-NM" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat meltdown/NM/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $p == 0 ]]; then
+        echo -e "$valid_count. Meltdown-P" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat meltdown/P/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $pk == 0 ]]; then
+        echo -e "$valid_count. Meltdown-PK" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat meltdown/PK/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $rw == 0 ]]; then
+        echo -e "$valid_count. Meltdown-RW" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat meltdown/RW/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $ss == 0 ]]; then
+        echo -e "$valid_count. Meltdown-SS" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat meltdown/SS/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $ud == 0 ]]; then
+        echo -e "$valid_count. Meltdown-UD" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat meltdown/UD/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $us == 0 ]]; then
+        echo -e "$valid_count. Meltdown-US" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat meltdown/US/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $btb_sa_ip == 0 ]]; then
+        echo -e "$valid_count. Spectre-BTB-sa-ip" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/BTB/sa_ip/main.cpp >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $btb_sa_oop == 0 ]]; then
+        echo -e "$valid_count. Spectre-BTB-sa-oop" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/BTB/sa_oop/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $btb_ca_ip == 0 ]]; then
+        echo -e "$valid_count. Spectre-BTB-ca-ip" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/BTB/ca_ip/main.cpp >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $btb_ca_oop == 0 ]]; then
+        echo -e "$valid_count. Spectre-BTB-ca-oop" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/BTB/ca_oop/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $pht_sa_ip == 0 ]]; then
+        echo -e "$valid_count. Spectre-PHT-sa-ip" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/PHT/sa_ip/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $pht_sa_oop == 0 ]]; then
+        echo -e "$valid_count. Spectre-PHT-sa-ip" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/PHT/sa_oop/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $pht_ca_ip == 0 ]]; then
+        echo -e "$valid_count. Spectre-PHT-ca-ip" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/PHT/ca_ip/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $pht_ca_oop == 0 ]]; then
+        echo -e "$valid_count. Spectre-PHT-ca-oop" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/PHT/ca_oop/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $rsb_sa_ip == 0 ]]; then
+        echo -e "$valid_count. Spectre-RSB-sa-ip" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/RSB/sa_ip/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $rsb_sa_oop == 0 ]]; then
+        echo -e "$valid_count. Spectre-RSB-sa-oop" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/RSB/sa_oop/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $rsb_ca_ip == 0 ]]; then
+        echo -e "$valid_count. Spectre-RSB-ca-ip" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/RSB/ca_ip/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $rsb_ca_oop == 0 ]]; then
+        echo -e "$valid_count. Spectre-RSB-ca-oop" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/RSB/ca_oop/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+
+    if [[ $stl == 0 ]]; then
+        echo -e "$valid_count. Spectre-STL" >>report.md 2>&1
+        echo -e "\`\`\`c" >>report.md 2>&1
+        cat spectre/STL/main.c >>report.md 2>&1
+        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        valid_count=$(expr $valid_count + 1)
+    fi
+    printf "\nValid PoCs have been saved to report.md\n"
+fi
 #################
