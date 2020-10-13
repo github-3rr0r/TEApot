@@ -1,34 +1,113 @@
-printf "\n***\tTEApot--Transient Execution Attack pot(Test suite)\t***\n\n"
-# Select vulnerabilities
-printf "You can select combination of vulnerabilities with following inputs:
-| Options     | Vulnerabilities to be tested    |
-| ----------- | ------------------------------- |
-| all         | All vulnerabilities             |
-| meltdown    | All Meltdown vulnerabilities    |
-| spectre     | All Spectre vulnerabilities     |
-| spectre_btb | All Spectre_BTB vulnerabilities |
-| spectre_pht | All Spectre_PHT vulnerabilities |
-| spectre_rsb | All Spectre_RSB vulnerabilities |
+#!/usr/bin/env bash
+####################################################
+# Fuction   : Evaluate whether your system is affected by Meltdown and Spectre
+# Platform  : Linux with gcc and other dependent libraries.
+# Version   : v1.1
+# Date      : 2020-10-13
+# Author    : https://github.com/Mashiro1995
+# Contact   :
+####################################################
 
-You can also use multi_parameters to select specific vulnerabilities and separate them with spaces:
-| Options | Vulnerabilities to be tested | Options    | Vulnerabilities to be tested |
-| ------- | ---------------------------- | ---------- | ---------------------------- |
-| ac      | Meltdown_AC                  | btb_sa_ip  | Spectre_BTB_sa_ip            |
-| br      | Meltdown_BR                  | btb_sa_oop | Spectre_BTB_sa_oop           |
-| de      | Meltdown_DE                  | btb_ca_ip  | Spectre_BTB_ca_ip            |
-| gp      | Meltdown_GP                  | btb_ca_oop | Spectre_BTB_ca_oop           |
-| nm      | Meltdown_NM                  | pht_sa_ip  | Spectre_PHT_sa_ip            |
-| p       | Meltdown_P                   | pht_sa_oop | Spectre_PHT_sa_oop           |
-| pk      | Meltdown_PK                  | pht_ca_ip  | Spectre_PHT_ca_ip            |
-| rw      | Meltdown_RW                  | pht_ca_oop | Spectre_PHT_ca_oop           |
-| ss      | Meltdown_SS                  | rsb_sa_ip  | Spectre_RSB_sa_ip            |
-| ud      | Meltdown_UD                  | rsb_sa_oop | Spectre_RSB_sa_oop           |
-| us      | Meltdown_US                  | rsb_ca_ip  | Spectre_RSB_ca_ip            |
-|         |                              | rsb_ca_oop | Spectre_RSB_ca_oop           |
-|         |                              | stl        | Spectre_STL                  |
+# Usage
+show_usage() {
+    cat <<EOF
+Usage:
+    Auto mode  :                    $(basename $0) [-o filename]
+    Manual mode:                    $(basename $0) [-v "list of vulnerablities"] [-o filename]
+    Show usage :                    $(basename $0) -h
+    Show supported vulnerablities:  $(basename $0) -l
+Modes:
+    Auto mode will test all vulnerablities covered in this test suite.
+    In manual mode, you can specify vulnerablities to be tested with options -v and followed by a list of vulnerablities.
+Options:
+    -o              enable and specify a markdown file as output of valid PoCs
+    --vuls, -v      list of vulnerablities to be tested. If not specified, all vuls will be test
+    --help, -h      show usage
+    --list, -l      Show supported vulnerablities
+Valid args of -v option:
+    You can select combination of vulnerabilities with following inputs:
+    | Options     | Vulnerabilities to be tested    |
+    | ----------- | ------------------------------- |
+    | all         | All vulnerabilities             |
+    | meltdown    | All Meltdown vulnerabilities    |
+    | spectre     | All Spectre vulnerabilities     |
+    | spectre_btb | All Spectre_BTB vulnerabilities |
+    | spectre_pht | All Spectre_PHT vulnerabilities |
+    | spectre_rsb | All Spectre_RSB vulnerabilities |
+    You can also use multi_parameters to select specific vulnerabilities and separate them with spaces:
+    | Options | Vulnerabilities to be tested | Options    | Vulnerabilities to be tested |
+    | ------- | ---------------------------- | ---------- | ---------------------------- |
+    | ac      | Meltdown_AC                  | btb_sa_ip  | Spectre_BTB_sa_ip            |
+    | br      | Meltdown_BR                  | btb_sa_oop | Spectre_BTB_sa_oop           |
+    | de      | Meltdown_DE                  | btb_ca_ip  | Spectre_BTB_ca_ip            |
+    | gp      | Meltdown_GP                  | btb_ca_oop | Spectre_BTB_ca_oop           |
+    | nm      | Meltdown_NM                  | pht_sa_ip  | Spectre_PHT_sa_ip            |
+    | p       | Meltdown_P                   | pht_sa_oop | Spectre_PHT_sa_oop           |
+    | pk      | Meltdown_PK                  | pht_ca_ip  | Spectre_PHT_ca_ip            |
+    | rw      | Meltdown_RW                  | pht_ca_oop | Spectre_PHT_ca_oop           |
+    | ss      | Meltdown_SS                  | rsb_sa_ip  | Spectre_RSB_sa_ip            |
+    | ud      | Meltdown_UD                  | rsb_sa_oop | Spectre_RSB_sa_oop           |
+    | us      | Meltdown_US                  | rsb_ca_ip  | Spectre_RSB_ca_ip            |
+    |         |                              | rsb_ca_oop | Spectre_RSB_ca_oop           |
+    |         |                              | stl        | Spectre_STL                  |
+Examples:
+    $(basename $0)
+        Test all vulnerabilities.
+    $(basename $0) -v "meltdown spectre_btb" -o report
+        Test all Meltdown and all Spectre_BTB type vulnerabilities, and save successful PoCs to report.md.
+EOF
+}
 
-\033[32m[Input]\033[0m Please select the vulnerabilities to be tested (default all): "
-read vuls
+show_supported_vuls() {
+    cat <<EOF
+Supported vulnerabilities list(Some of them are not valid but included for evaluating systematicly):
+    | Systematic type name | CVE                                       | Description                                       |
+    | -------------------- | ----------------------------------------- | ------------------------------------------------- |
+    | Meltdown_AC          | -                                         | -                                                 |
+    | Meltdown_BR          | -                                         | -                                                 |
+    | Meltdown_DE          | -                                         | -                                                 |
+    | Meltdown_GP          | CVE-2018-3640                             | Spectre V3a, rogue system register read           |
+    | Meltdown_NM          | CVE-2018-3665                             | Lazy FP                                           |
+    | Meltdown_P           | CVE-2018-3615/CVE-2018-3620/CVE-2018-3646 | Foreshadow, L1 terminal fault                     |
+    | Meltdown_PK          | -                                         | -                                                 |
+    | Meltdown_RW          |                                           | Spectre V1.2, write to page with read-only flag   |
+    | Meltdown_SS          | -                                         | -                                                 |
+    | Meltdown_UD          | -                                         | -                                                 |
+    | Meltdown_US          | CVE-2017-5754                             | Meltdown, rogue data cache load                   |
+    | Spectre_BTB          | CVE-2017-5715                             | Spectre V2, branch target injection               |
+    | Spectre_PHT          | CVE-2017-5753                             | Spectre V1, bounds check bypass                   |
+    | Spectre_RSB          | -                                         | -                                                 |
+    | Spectre_STL          | CVE-2018-3693/CVE-2018-3639               | Spectre V1.1, NG and V4, speculative store bypass |
+EOF
+}
+
+output_poc=0
+
+while getopts "v:o:hl" arg; do
+    case $arg in
+    v)
+        vuls=$OPTARG
+        ;;
+    o)
+        output_poc=1
+        output_file=$OPTARG".md"
+        echo $output_file
+        ;;
+    h)
+        show_usage
+        exit -1
+        ;;
+    l)
+        show_supported_vuls
+        exit -1
+        ;;
+    \?)
+        show_usage
+        exit -1
+        ;;
+    esac
+done
+
 IFS=" "
 arr_vuls=($vuls)
 if [[ ${#arr_vuls[@]} == 0 ]]; then
@@ -131,20 +210,17 @@ for vul in ${arr_vuls[@]}; do
     fi
 done
 
-# Choose whether to output PoC
-printf "\n\033[32m[Input]\033[0m Please choose whether to output successful PoCs(default no)[Y/N]: "
-read poc_input
-if [[ $poc_input == 'y' ]] || [[ $poc_input == 'Y' ]]; then
-    output_poc=1
-else
-    output_poc=0
-fi
-
+printf "\n*******************************************************************\n"
+printf "***\tTEApot--Transient Execution Attack pot(Test suite)\t***\n"
+printf "*******************************************************************\n\n"
 # Get pagesize and threshold
-printf "\n\nInitialize tests...\n"
+printf "\033[32m[Init]\033[0m\tInitialize tests...\n"
+printf "\033[32m[Init]\033[0m\tThese vuls will be tested: $vuls\n"
 pagesize=$(./libcache/get_pagesize)
 threshold=$(./libcache/get_threshold)
-printf "\033[32m[OK]\033[0m pagesize = $pagesize, threshold = $threshold\n\n"
+printf "\033[32m[Ready]\033[0m\tPagesize = $pagesize, Threshold = $threshold\n\n"
+
+printf "\033[32m[Begin]\033[0m\tTest begins...\n\n"
 
 # Exploit
 # meltdown_ac
@@ -293,7 +369,7 @@ if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $stl == 1 ]]; then
     ./spectre/STL/poc $pagesize $threshold
     stl=$?
 fi
-printf "\033[32m[OK]\033[0m All tests done!\n"
+printf "\033[32m[Done]\033[0m\tAll tests done!\n"
 
 # Output report
 result_n="\033[32mN\033[0m"
@@ -492,7 +568,7 @@ else
     result_stl=$result_e
 fi
 
-printf "
+printf "\033[32m[Done]\033[0m\tFinal report
 |                          REPORT                           |
 | --------------------------------------------------------- |
 | Meltdowns       | Results | Spectres            | Results |
@@ -510,205 +586,206 @@ printf "
 | Meltdown_US     | $result_us       | Spectre_RSB_ca_ip   | $result_rsb_ca_ip       |
 |                 |         | Spectre_RSB_ca_oop  | $result_rsb_ca_oop       |
 |                 |         | Spectre_STL         | $result_stl       |
-\033[32m[N]\033[0m: Not vulnerable; \033[31m[Y]\033[0m: Vulnerable; \033[33m[E]\033[0m: Error/Not tested
+Note: \033[32m[N]\033[0m: Not vulnerable; \033[31m[Y]\033[0m: Vulnerable; \033[33m[E]\033[0m: Error/Not tested
 "
 
 # Output PoCs
 #################
 valid_count=1
 if [[ $output_poc == 1 ]]; then
-    echo -e "# Valid PoCs" >>report.md 2>&1
+    echo -e "# Valid PoCs" >>$output_file 2>&1
     if [[ $ac == 0 ]]; then
-        echo -e "$valid_count. Meltdown-AC" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat meltdown/AC/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Meltdown-AC" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat meltdown/AC/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $br == 0 ]]; then
-        echo -e "$valid_count. Meltdown-BR" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat meltdown/BR/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Meltdown-BR" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat meltdown/BR/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $de == 0 ]]; then
-        echo -e "$valid_count. Meltdown-DE" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat meltdown/DE/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Meltdown-DE" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat meltdown/DE/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $gp == 0 ]]; then
-        echo -e "$valid_count. Meltdown-GP" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat meltdown/GP/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Meltdown-GP" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat meltdown/GP/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $nm == 0 ]]; then
-        echo -e "$valid_count. Meltdown-NM" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat meltdown/NM/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Meltdown-NM" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat meltdown/NM/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $p == 0 ]]; then
-        echo -e "$valid_count. Meltdown-P" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat meltdown/P/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Meltdown-P" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat meltdown/P/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $pk == 0 ]]; then
-        echo -e "$valid_count. Meltdown-PK" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat meltdown/PK/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Meltdown-PK" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat meltdown/PK/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $rw == 0 ]]; then
-        echo -e "$valid_count. Meltdown-RW" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat meltdown/RW/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Meltdown-RW" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat meltdown/RW/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $ss == 0 ]]; then
-        echo -e "$valid_count. Meltdown-SS" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat meltdown/SS/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Meltdown-SS" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat meltdown/SS/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $ud == 0 ]]; then
-        echo -e "$valid_count. Meltdown-UD" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat meltdown/UD/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Meltdown-UD" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat meltdown/UD/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $us == 0 ]]; then
-        echo -e "$valid_count. Meltdown-US" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat meltdown/US/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Meltdown-US" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat meltdown/US/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $btb_sa_ip == 0 ]]; then
-        echo -e "$valid_count. Spectre-BTB-sa-ip" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/BTB/sa_ip/main.cpp >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-BTB-sa-ip" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/BTB/sa_ip/main.cpp >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $btb_sa_oop == 0 ]]; then
-        echo -e "$valid_count. Spectre-BTB-sa-oop" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/BTB/sa_oop/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-BTB-sa-oop" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/BTB/sa_oop/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $btb_ca_ip == 0 ]]; then
-        echo -e "$valid_count. Spectre-BTB-ca-ip" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/BTB/ca_ip/main.cpp >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-BTB-ca-ip" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/BTB/ca_ip/main.cpp >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $btb_ca_oop == 0 ]]; then
-        echo -e "$valid_count. Spectre-BTB-ca-oop" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/BTB/ca_oop/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-BTB-ca-oop" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/BTB/ca_oop/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $pht_sa_ip == 0 ]]; then
-        echo -e "$valid_count. Spectre-PHT-sa-ip" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/PHT/sa_ip/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-PHT-sa-ip" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/PHT/sa_ip/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $pht_sa_oop == 0 ]]; then
-        echo -e "$valid_count. Spectre-PHT-sa-ip" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/PHT/sa_oop/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-PHT-sa-ip" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/PHT/sa_oop/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $pht_ca_ip == 0 ]]; then
-        echo -e "$valid_count. Spectre-PHT-ca-ip" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/PHT/ca_ip/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-PHT-ca-ip" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/PHT/ca_ip/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $pht_ca_oop == 0 ]]; then
-        echo -e "$valid_count. Spectre-PHT-ca-oop" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/PHT/ca_oop/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-PHT-ca-oop" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/PHT/ca_oop/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $rsb_sa_ip == 0 ]]; then
-        echo -e "$valid_count. Spectre-RSB-sa-ip" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/RSB/sa_ip/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-RSB-sa-ip" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/RSB/sa_ip/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $rsb_sa_oop == 0 ]]; then
-        echo -e "$valid_count. Spectre-RSB-sa-oop" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/RSB/sa_oop/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-RSB-sa-oop" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/RSB/sa_oop/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $rsb_ca_ip == 0 ]]; then
-        echo -e "$valid_count. Spectre-RSB-ca-ip" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/RSB/ca_ip/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-RSB-ca-ip" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/RSB/ca_ip/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $rsb_ca_oop == 0 ]]; then
-        echo -e "$valid_count. Spectre-RSB-ca-oop" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/RSB/ca_oop/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-RSB-ca-oop" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/RSB/ca_oop/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
 
     if [[ $stl == 0 ]]; then
-        echo -e "$valid_count. Spectre-STL" >>report.md 2>&1
-        echo -e "\`\`\`c" >>report.md 2>&1
-        cat spectre/STL/main.c >>report.md 2>&1
-        echo -e "\n\`\`\`\n" >>report.md 2>&1
+        echo -e "$valid_count. Spectre-STL" >>$output_file 2>&1
+        echo -e "\`\`\`c" >>$output_file 2>&1
+        cat spectre/STL/main.c >>$output_file 2>&1
+        echo -e "\n\`\`\`\n" >>$output_file 2>&1
         valid_count=$(expr $valid_count + 1)
     fi
-    printf "\nValid PoCs have been saved to report.md\n"
+    printf "\033[32m[Done]\033[0m\tValid PoCs have been saved to $output_file\n"
 fi
+printf "\n\033[32m[Done]\033[0m\tDone!\n\n"
 #################
