@@ -12,18 +12,21 @@
 show_usage() {
     cat <<EOF
 Usage:
-    Auto mode  :                    $(basename $0) [-o filename]
-    Manual mode:                    $(basename $0) [-v "list of vulnerablities"] [-o filename]
+    Auto mode  :                    $(basename $0) [-o filename] [-m]
+    Manual mode:                    $(basename $0) [-v "list of vulnerablities"] [-o filename] [-m]
     Show usage :                    $(basename $0) -h
-    Show supported vulnerablities:  $(basename $0) -l
+    Show supported vulnerablities:  $(basename $0) -l [-m]
 Modes:
     Auto mode will test all vulnerablities covered in this test suite.
     In manual mode, you can specify vulnerablities to be tested with options -v and followed by a list of vulnerablities.
 Options:
     -o              enable and specify a markdown file as output of valid PoCs
-    --vuls, -v      list of vulnerablities to be tested. If not specified, all vuls will be test
-    --help, -h      show usage
-    --list, -l      Show supported vulnerablities
+    -v              list of vulnerablities to be tested. If not specified, all vuls will be test
+    -h              show usage
+    -l              show supported vulnerablities
+    -s              show simple supported vulnerablities options
+    -m              used in test mode, simple result output will be available. 
+                    0 means vulnerable, 1 means not vulnerable, other values mean error or not tested.
 Valid args of -v option:
     You can select combination of vulnerabilities with following inputs:
     | Options     | Vulnerabilities to be tested    |
@@ -53,8 +56,12 @@ Valid args of -v option:
 Examples:
     $(basename $0)
         Test all vulnerabilities.
+    $(basename $0) -m
+        Test all vulnerabilities and save simple result to result.txt.
     $(basename $0) -v "meltdown spectre_btb" -o report
         Test all Meltdown and all Spectre_BTB type vulnerabilities, and save successful PoCs to report.md.
+    $(basename $0) -v "meltdown spectre_btb" -o report -m
+        Test all Meltdown and all Spectre_BTB type vulnerabilities, save simple result to result.txt, and successful PoCs to report.md.
 EOF
 }
 
@@ -81,9 +88,14 @@ Supported vulnerabilities list(Some of them are not valid but included for evalu
 EOF
 }
 
-output_poc=0
+show_simple_supported_vuls() {
+    echo "ac br de gp nm p pk rw ss ud us btb_sa_ip btb_sa_oop btb_ca_ip btb_ca_oop pht_sa_ip pht_sa_oop pht_ca_ip pht_ca_oop rsb_sa_ip rsb_sa_oop rsb_ca_ip rsb_ca_oop stl"
+}
 
-while getopts "v:o:hl" arg; do
+output_poc=0
+gen_simple_result_file=0
+
+while getopts "v:o:hlsm" arg; do
     case $arg in
     v)
         vuls=$OPTARG
@@ -91,7 +103,6 @@ while getopts "v:o:hl" arg; do
     o)
         output_poc=1
         output_file=$OPTARG".md"
-        echo $output_file
         ;;
     h)
         show_usage
@@ -100,6 +111,13 @@ while getopts "v:o:hl" arg; do
     l)
         show_supported_vuls
         exit -1
+        ;;
+    s)
+        show_simple_supported_vuls
+        exit -1
+        ;;
+    m)
+        gen_simple_result_file=1
         ;;
     \?)
         show_usage
@@ -142,6 +160,7 @@ rsb_sa_ip=-1
 rsb_sa_oop=-1
 rsb_ca_ip=-1
 rsb_ca_oop=-1
+stl=-1
 for vul in ${arr_vuls[@]}; do
     if [[ $vul == "all" ]]; then
         all=1
@@ -589,10 +608,45 @@ printf "\033[32m[Done]\033[0m\tFinal report
 Note: \033[32m[N]\033[0m: Not vulnerable; \033[31m[Y]\033[0m: Vulnerable; \033[33m[E]\033[0m: Error/Not tested
 "
 
+# generate simple result file
+if [[ $gen_simple_result_file == 1 ]]; then
+    if [[ -f result.txt ]]; then
+        rm result.txt
+    fi
+    echo -e "ac $ac" >>result.txt 2>&1
+    echo -e "br $br" >>result.txt 2>&1
+    echo -e "de $de" >>result.txt 2>&1
+    echo -e "gp $gp" >>result.txt 2>&1
+    echo -e "nm $nm" >>result.txt 2>&1
+    echo -e "p $p" >>result.txt 2>&1
+    echo -e "pk $pk" >>result.txt 2>&1
+    echo -e "rw $rw" >>result.txt 2>&1
+    echo -e "ss $ss" >>result.txt 2>&1
+    echo -e "ud $ud" >>result.txt 2>&1
+    echo -e "us $us" >>result.txt 2>&1
+    echo -e "btb_sa_ip $btb_sa_ip" >>result.txt 2>&1
+    echo -e "btb_sa_oop $btb_sa_oop" >>result.txt 2>&1
+    echo -e "btb_ca_ip $btb_ca_ip" >>result.txt 2>&1
+    echo -e "btb_ca_oop $btb_ca_oop" >>result.txt 2>&1
+    echo -e "pht_sa_ip $pht_sa_ip" >>result.txt 2>&1
+    echo -e "pht_sa_oop $pht_sa_oop" >>result.txt 2>&1
+    echo -e "pht_ca_ip $pht_ca_ip" >>result.txt 2>&1
+    echo -e "pht_ca_oop $pht_ca_oop" >>result.txt 2>&1
+    echo -e "rsb_sa_ip $rsb_sa_ip" >>result.txt 2>&1
+    echo -e "rsb_sa_oop $rsb_sa_oop" >>result.txt 2>&1
+    echo -e "rsb_ca_ip $rsb_ca_ip" >>result.txt 2>&1
+    echo -e "rsb_ca_oop $rsb_ca_oop" >>result.txt 2>&1
+    echo -e "stl $stl" >>result.txt 2>&1
+    printf "\n\033[32m[Done]\033[0m\tSimple result file generated(result.txt).\n"
+fi
+
 # Output PoCs
 #################
 valid_count=1
 if [[ $output_poc == 1 ]]; then
+    if [[ -f $output_file ]]; then
+        rm $output_file
+    fi
     echo -e "# Valid PoCs" >>$output_file 2>&1
     if [[ $ac == 0 ]]; then
         echo -e "$valid_count. Meltdown-AC" >>$output_file 2>&1

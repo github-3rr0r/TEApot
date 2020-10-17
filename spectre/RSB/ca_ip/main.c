@@ -83,12 +83,12 @@ int main(int argc, char **argv)
         int exit_result = 0;
         if (victim() == SECRET)
         {
-            printf(ANSI_COLOR_RED "Spectre_RSB_CA_IP: Vulnerable\n" ANSI_COLOR_RESET);
+            printf(ANSI_COLOR_RED "Spectre_RSB_ca_ip: Vulnerable\n" ANSI_COLOR_RESET);
             exit_result = EXIT_SUCCESS;
         }
         else
         {
-            printf(ANSI_COLOR_GREEN "Spectre_RSB_CA_IP: Not Vulnerable\n" ANSI_COLOR_RESET);
+            printf(ANSI_COLOR_GREEN "Spectre_RSB_ca_ip: Not Vulnerable\n" ANSI_COLOR_RESET);
             exit_result = EXIT_FAILURE;
         }
         printf("Spectre_RSB_ca_ip Done!\n\n");
