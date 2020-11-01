@@ -91,6 +91,7 @@ sudo apt-get install libc6-dev-i386
 sudo apt-get install build-essential
 sudo apt-get install seccomp
 sudo apt-get install libseccomp-dev
+sudo apt-get install zsh
 ```
 
 1. Clone this repository

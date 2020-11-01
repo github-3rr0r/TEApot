@@ -506,10 +506,7 @@ void cache_decode_array(char *leaked, int index)
             if ((mix_i >= 'A' && mix_i <= 'Z') && leaked[index] == ' ')
             {
                 leaked[index] = mix_i;
-                // printf("\x1b[33m%s\x1b[0m\r", leaked);
             }
-            //         fflush(stdout);
-            //   sched_yield();
         }
     }
 }

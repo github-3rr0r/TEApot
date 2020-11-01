@@ -23,6 +23,7 @@
     }\
     sscanf(argv[1], "%ld", &pagesize);\
     sscanf(argv[2], "%ld", &CACHE_MISS);\
-    mem = (char *)malloc(pagesize * 256);\
+    char *_mem = (char *)malloc(pagesize * (256 + 4));\
+    mem = (char *)(((size_t)_mem & ~(pagesize-1)) + pagesize * 2);\
     memset(mem, 1, pagesize * 256);\
     int passed_count = 0

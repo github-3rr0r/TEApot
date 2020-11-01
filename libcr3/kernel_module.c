@@ -6,6 +6,9 @@
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
+// add 2020.10.29
+#include <asm/io.h>
+#include <linux/version.h>
 
 static unsigned long cr3_val = 0;
 
@@ -79,17 +82,45 @@ static int my_proc_open(struct inode *inode, struct file *file)
     return single_open(file, my_proc_show, NULL);
 }
 
-static struct file_operations my_fops = {.owner = THIS_MODULE,
-                                         .open = my_proc_open,
-                                         .release = single_release,
-                                         .read = seq_read,
-                                         .llseek = seq_lseek,
-                                         .write = my_proc_write};
+// static struct file_operations my_fops = {.owner = THIS_MODULE,
+//                                          .open = my_proc_open,
+//                                          .release = single_release,
+//                                          .read = seq_read,
+//                                          .llseek = seq_lseek,
+//                                          .write = my_proc_write};
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0)
+static struct proc_ops umem_ops = {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 7, 0)
+  .proc_flags = 0,
+#endif
+  .proc_open = my_proc_open,
+  .proc_read = seq_read,
+  .proc_write = my_proc_write,
+  .proc_lseek = seq_lseek,
+  .proc_release = single_release,
+  .proc_poll = NULL,
+  .proc_ioctl = NULL,
+#ifdef CONFIG_COMPAT
+  .proc_compat_ioctl = NULL,
+#endif
+  .proc_mmap = NULL,
+  .proc_get_unmapped_area = NULL,
+};
+#define OP_lseek lseek
+#define OPCAT(a, b) a ## b
+#define OPS(o) OPCAT(umem_ops.proc_, o)
+#else
+static struct file_operations umem_ops = {.owner = THIS_MODULE};
+#define OP_lseek llseek
+#define OPS(o) umem_ops.o
+#endif
 
 static int __init hello_init(void)
 {
     struct proc_dir_entry *entry;
-    entry = proc_create("cr3", 0777, NULL, &my_fops);
+    entry = proc_create("cr3", 0777, NULL, &umem_ops);
+    // entry = proc_create("cr3", 0777, NULL, &my_fops);
     if (!entry)
     {
         return -1;

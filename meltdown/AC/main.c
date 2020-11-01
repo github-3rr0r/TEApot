@@ -54,9 +54,7 @@ int main(int argc, char **argv)
 #endif
         if (try_start())
         {
-            // maccess(buffer);
             maccess(0);
-            // maccess(1);
             cache_encode(*p);
             try_abort();
         }
