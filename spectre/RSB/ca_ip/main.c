@@ -38,6 +38,7 @@ void __attribute__((noinline)) attacker()
 
 char __attribute__((noinline)) victim()
 {
+    start_time = clock();
     for (int j = 0; j < MAX_TRY_TIMES; j++)
     {
         // Flush our shared memory
@@ -58,6 +59,12 @@ char __attribute__((noinline)) victim()
                     return (char)mix_i;
                 }
             }
+        }
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Spectre_RSB_ca_ip: Timeout\n" ANSI_COLOR_RESET);
+            printf("Spectre_RSB_ca_ip Done!\n\n");
+            exit(-1);
         }
     }
 }

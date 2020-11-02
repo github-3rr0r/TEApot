@@ -5,6 +5,7 @@
 #include <sys/mman.h>
 #include <sys/syscall.h>
 #include <unistd.h>
+#include <sched.h>
 
 #include "libcache/cache.h"
 #include "lib/global.h"
@@ -45,6 +46,7 @@ int main(int argc, char **argv)
     *buffer = 's';
     p = (int *)buffer;
 #endif
+    start_time = clock();
     for (int i = 0; i < MAX_TRY_TIMES; i++)
     {
         // attack
@@ -67,6 +69,12 @@ int main(int argc, char **argv)
         if (cache_decode() == *buffer)
         {
             passed_count++;
+        }
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Meltdown_AC: Timeout\n" ANSI_COLOR_RESET);
+            printf("Meltdown_AC Done!\n\n");
+            exit(-1);
         }
     }
     int exit_result = 0;

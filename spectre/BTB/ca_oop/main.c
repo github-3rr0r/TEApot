@@ -97,12 +97,16 @@ size_t calibration()
 
 int main(int argc, char **argv)
 {
+    printf("Spectre_BTB_ca_oop Begins...\n");
     if (argc < 3)
     {
+        printf(ANSI_COLOR_YELLOW "Spectre_BTB_ca_oop: Error\n" ANSI_COLOR_RESET);
+        printf("Spectre_BTB_ca_oop Done!\n\n");
         exit(-1);
     }
 
-    printf("Spectre_BTB_ca_oop Begins...\n");
+    timeout *= CLOCKS_PER_SEC;
+
     int secret = SECRET;
 
     int oop = argc == 4 ? 1 : 0;
@@ -154,20 +158,27 @@ int main(int argc, char **argv)
         size_t hits = 0;
         size_t sucs = 0;
         int exit_result = 0;
+        start_time = clock();
         while (1)
         {
+            if (clock() - start_time > timeout)
+            {
+                printf(ANSI_COLOR_YELLOW "Spectre_BTB_ca_oop: Timeout\n" ANSI_COLOR_RESET);
+                printf("Spectre_BTB_ca_oop Done!\n\n");
+                exit(-1);
+            }
             if (trys == MAX_TRY_TIMES)
             {
                 if (sucs * 10 > hits)
                 {
-                    printf(ANSI_COLOR_RED "Spectre_BTB_CA_OOP: Vulnerable\n" ANSI_COLOR_RESET);
+                    printf(ANSI_COLOR_RED "Spectre_BTB_ca_oop: Vulnerable\n" ANSI_COLOR_RESET);
                     kill(pid ? pid : getppid(), SIGKILL);
                     printf("Spectre_BTB_ca_oop Done!\n\n");
                     exit_result = EXIT_SUCCESS;
                 }
                 else
                 {
-                    printf(ANSI_COLOR_GREEN "Spectre_BTB_CA_OOP: Not Vulnerable\n" ANSI_COLOR_RESET);
+                    printf(ANSI_COLOR_GREEN "Spectre_BTB_ca_oop: Not Vulnerable\n" ANSI_COLOR_RESET);
                     kill(pid ? pid : getppid(), SIGKILL);
                     printf("Spectre_BTB_ca_oop Done!\n\n");
                     exit_result = EXIT_FAILURE;

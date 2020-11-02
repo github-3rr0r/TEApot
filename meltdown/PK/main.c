@@ -21,7 +21,7 @@ int main(int argc, char **argv)
                           MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
     if (buffer == MAP_FAILED)
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error\n" ANSI_COLOR_RESET);
         printf("Meltdown_PK done!\n\n");
         exit(-1);
     }
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     pkey = syscall(330, 0, 0);
     if (pkey == -1)
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error\n" ANSI_COLOR_RESET);
         printf("Meltdown_PK done!\n\n");
         exit(-1);
     }
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     status = pkey_set(pkey, 0);
     if (status)
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error\n" ANSI_COLOR_RESET);
         printf("Meltdown_PK done!\n\n");
         exit(-1);
     }
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     status = pkey_mprotect(buffer, getpagesize(), PROT_READ | PROT_WRITE, pkey);
     if (status == -1)
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error\n" ANSI_COLOR_RESET);
         printf("Meltdown_PK done!\n\n");
         exit(-1);
     }
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
     status = pkey_set(pkey, 0x1);
     if (status)
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error\n" ANSI_COLOR_RESET);
         printf("Meltdown_PK done!\n\n");
         exit(-1);
     }
@@ -74,6 +74,7 @@ int main(int argc, char **argv)
     // flush memory before access
     flush_shared_memory();
     passed_count = 0;
+    start_time = clock();
     for (int r = 0; r < MAX_TRY_TIMES; r++)
     {
         // ensure data is cached
@@ -107,6 +108,12 @@ int main(int argc, char **argv)
         if (cache_decode() == 'S')
         {
             passed_count++;
+        }
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Meltdown_PK: Timeout\n" ANSI_COLOR_RESET);
+            printf("Meltdown_PK Done!\n\n");
+            exit(-1);
         }
     }
     int exit_result = 0;

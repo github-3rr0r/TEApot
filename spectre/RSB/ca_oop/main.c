@@ -69,6 +69,7 @@ int main(int argc, char **argv)
     }
     else
     {
+        start_time = clock();
         for (int i = 0; i < 1000; i++)
         {
             // Flush shared memory
@@ -81,6 +82,12 @@ int main(int argc, char **argv)
             if (cache_decode() == 'S')
             {
                 passed_count++;
+            }
+            if (clock() - start_time > timeout)
+            {
+                printf(ANSI_COLOR_YELLOW "Spectre_RSB_ca_oop: Timeout\n" ANSI_COLOR_RESET);
+                printf("Spectre_RSB_ca_oop Done!\n\n");
+                exit(-1);
             }
         }
         int exit_result = 0;

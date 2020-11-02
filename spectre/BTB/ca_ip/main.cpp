@@ -83,7 +83,7 @@ int main(int argc, char **argv)
 
     // trigger COW for the page containing the function
     ptr[0] = ptr[0];
-
+    start_time = clock();
     for (int i = 0; i < MAX_TRY_TIMES; i++)
     {
         // Parent is doing the mistraining
@@ -94,6 +94,10 @@ int main(int argc, char **argv)
             for (int j = 0; j < 10000; j++)
             {
                 move_animal(fish);
+            }
+            if (clock() - start_time > timeout)
+            {
+                exit(-1);
             }
         }
         // Flush our shared memory
@@ -115,6 +119,12 @@ int main(int argc, char **argv)
             if (cache_decode() == 'S')
             {
                 passed_count++;
+            }
+            if (clock() - start_time > timeout)
+            {
+                printf(ANSI_COLOR_YELLOW "Spectre_BTB_ca_ip: Timeout\n" ANSI_COLOR_RESET);
+                printf("Spectre_BTB_ca_ip Done!\n\n");
+                exit(-1);
             }
         }
     }

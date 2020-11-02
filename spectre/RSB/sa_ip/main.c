@@ -59,7 +59,7 @@ int main(int argc, char **argv)
     pthread_t victim_thread;
     pthread_create(&attacker_thread, 0, attacker, 0);
     pthread_create(&victim_thread, 0, victim, 0);
-
+    start_time = clock();
     for (int j = 0; j < MAX_TRY_TIMES; j++)
     {
         // Flush our shared memory
@@ -71,6 +71,12 @@ int main(int argc, char **argv)
         if (cache_decode() == 'S')
         {
             passed_count++;
+        }
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Spectre_RSB_sa_ip: Timeout\n" ANSI_COLOR_RESET);
+            printf("Spectre_RSB_sa_ip Done!\n\n");
+            exit(-1);
         }
     }
     int exit_result = 0;

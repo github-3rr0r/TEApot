@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     // Initialize PTEditor to manipulate page table entries
     if (ptedit_init())
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_P: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_YELLOW "Meltdown_P: Error\n" ANSI_COLOR_RESET);
         printf("Meltdown_P done!\n\n");
         exit(-1);
     }
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     int shm = shm_open("shared_mapping", O_CREAT | O_RDWR, 0644);
     if (shm == -1)
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_P: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_YELLOW "Meltdown_P: Error\n" ANSI_COLOR_RESET);
         printf("Meltdown_P done!\n\n");
         exit(-1);
     }
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     // Set memory objects size
     if (ftruncate(shm, 4096 * 2) == -1)
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_P: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_YELLOW "Meltdown_P: Error\n" ANSI_COLOR_RESET);
         printf("Meltdown_P done!\n\n");
         exit(-1);
     }
@@ -62,6 +62,7 @@ int main(int argc, char **argv)
 
     // Flush our shared memory
     flush_shared_memory();
+    start_time = clock();
     for (int r = 0; r < MAX_TRY_TIMES; r++)
     {
         // Load data into the cache and fence
@@ -81,6 +82,12 @@ int main(int argc, char **argv)
         if (cache_decode() == 'S')
         {
             passed_count++;
+        }
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Meltdown_P: Timeout\n" ANSI_COLOR_RESET);
+            printf("Meltdown_P Done!\n\n");
+            exit(-1);
         }
     }
     int exit_result = 0;

@@ -61,6 +61,7 @@ int main(int argc, const char **argv)
     leaked[sizeof(DATA_SECRET)] = 0;
 
     int j = 0;
+    start_time = clock();
     for (int i = 0; i < MAX_TRY_TIMES; i++)
     {
         // for every byte in the string
@@ -81,6 +82,12 @@ int main(int argc, const char **argv)
 
             mfence(); // avoid speculation
             cache_decode_array(leaked, j);
+            if (clock() - start_time > timeout)
+            {
+                printf(ANSI_COLOR_YELLOW "Spectre_PHT_ca_ip: Timeout\n" ANSI_COLOR_RESET);
+                printf("Spectre_PHT_ca_ip Done!\n\n");
+                exit(-1);
+            }
         }
     }
     int exit_result = 0;

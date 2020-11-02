@@ -2,6 +2,8 @@
     #define GLOBAL_H
 #endif
 
+#include <time.h>
+
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
 #define ANSI_COLOR_YELLOW  "\x1b[33m"
@@ -14,15 +16,20 @@
 
 #define POC_ERROR          -1
 
+static clock_t timeout = 120;
+
+static clock_t start_time = 0;
 
 #define PREPARE() \
-    if (argc != 3)\
+    if (argc != 4)\
     {\
-        printf("Usage\t: ./poc [pagesize] [threshold]\nExample\t: ./poc 4096 200\n");\
+        printf("Usage\t: ./poc [pagesize] [threshold] [timeout]\nExample\t: ./poc 4096 200 120\n");\
         exit(-1);\
     }\
     sscanf(argv[1], "%ld", &pagesize);\
     sscanf(argv[2], "%ld", &CACHE_MISS);\
+    sscanf(argv[3], "%ld", &timeout);\
+    timeout = timeout * CLOCKS_PER_SEC;\
     char *_mem = (char *)malloc(pagesize * (256 + 4));\
     mem = (char *)(((size_t)_mem & ~(pagesize-1)) + pagesize * 2);\
     memset(mem, 1, pagesize * 256);\

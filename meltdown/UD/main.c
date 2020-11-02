@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 
     // Flush our shared memory
     flush_shared_memory();
-
+    start_time = clock();
     for (int r = 0; r < MAX_TRY_TIMES; r++)
     {
         // Ensure data is in the cache
@@ -56,6 +56,12 @@ int main(int argc, char **argv)
         if (cache_decode() == 'S')
         {
             passed_count++;
+        }
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Meltdown_UD: Timeout\n" ANSI_COLOR_RESET);
+            printf("Meltdown_UD Done!\n\n");
+            exit(-1);
         }
     }
     int exit_result = 0;

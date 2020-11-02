@@ -53,7 +53,7 @@ int main(int argc, const char **argv)
     // set the high bits to something and set the low bits to dump_scret, we only care about the low bits in BTB indexing
     dump = (void (*)())(0x123321000000 | (size_t)dump);
     // We now have a function pointer to a function with the same 23 LSB as our leak function
-
+    start_time = clock();
     for (int k = 0; k < MAX_TRY_TIMES; k++)
     {
         // Mistrain by calling mistrain (dump_secret) function
@@ -81,6 +81,12 @@ int main(int argc, const char **argv)
         if (cache_decode() == 'S')
         {
             passed_count++;
+        }
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Spectre_BTB_sa_oop: Timeout\n" ANSI_COLOR_RESET);
+            printf("Spectre_BTB_sa_oop Done!\n\n");
+            exit(-1);
         }
     }
     int exit_result = 0;

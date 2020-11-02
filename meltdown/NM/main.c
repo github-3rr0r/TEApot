@@ -19,7 +19,7 @@ int main(int argc, char **argv)
     printf("Meltdown_NM Begins!\n");
     // Flush our shared memory
     flush_shared_memory();
-
+    start_time = clock();
     for (int r = 0; r < MAX_TRY_TIMES; r++)
     {
         if (try_start())
@@ -43,7 +43,12 @@ int main(int argc, char **argv)
         {
             passed_count++;
         }
-        // printf("%c ", cache_decode());
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Meltdown_NM: Timeout\n" ANSI_COLOR_RESET);
+            printf("Meltdown_NM Done!\n\n");
+            exit(-1);
+        }
     }
     int exit_result = 0;
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)

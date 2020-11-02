@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     printf("Meltdown_RW Begins...\n");
     // Flush our shared memory
     flush_shared_memory();
-
+    start_time = clock();
     for (int i = 0; i < MAX_TRY_TIMES; i++)
     {
         if (try_start())
@@ -44,6 +44,12 @@ int main(int argc, char **argv)
         if (cache_decode() == 'S')
         {
             passed_count++;
+        }
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Meltdown_RW: Timeout\n" ANSI_COLOR_RESET);
+            printf("Meltdown_RW Done!\n\n");
+            exit(-1);
         }
     }
     // printf("%lf\n", (double)passed_count/MAX_TRY_TIMES);

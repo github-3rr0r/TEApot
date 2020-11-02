@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     volatile int d = 0;
     // Flush our shared memory
     flush_shared_memory();
-
+    start_time = clock();
     for (int r = 0; r < MAX_TRY_TIMES; r++)
     {
         if (try_start())
@@ -34,6 +34,12 @@ int main(int argc, char **argv)
         if (cache_decode() == 'd')
         {
             passed_count++;
+        }
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Meltdown_DE: Timeout\n" ANSI_COLOR_RESET);
+            printf("Meltdown_DE Done!\n\n");
+            exit(-1);
         }
     }
 

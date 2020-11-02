@@ -81,7 +81,7 @@ int main(int argc, char **argv)
     maccess((void *)move_animal);
 
     ptr[0] = ptr[0];
-
+    start_time = clock();
     for (int i = 0; i < MAX_TRY_TIMES; i++)
     {
         nospec();
@@ -106,6 +106,12 @@ int main(int argc, char **argv)
         if (cache_decode() == 'S')
         {
             passed_count++;
+        }
+        if (clock() - start_time > timeout)
+        {
+            printf(ANSI_COLOR_YELLOW "Spectre_BTB_sa_ip: Timeout\n" ANSI_COLOR_RESET);
+            printf("Spectre_BTB_sa_ip Done!\n\n");
+            exit(-1);
         }
     }
     int exit_result = 0;
