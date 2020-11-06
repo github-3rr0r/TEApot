@@ -16,9 +16,9 @@
 
 #define POC_ERROR          -1
 
-static clock_t timeout = 120;
+static time_t timeout = 120;
 
-static clock_t start_time = 0;
+static time_t start_time = 0;
 
 #define PREPARE() \
     if (argc != 4)\
@@ -29,7 +29,6 @@ static clock_t start_time = 0;
     sscanf(argv[1], "%ld", &pagesize);\
     sscanf(argv[2], "%ld", &CACHE_MISS);\
     sscanf(argv[3], "%ld", &timeout);\
-    timeout = timeout * CLOCKS_PER_SEC;\
     char *_mem = (char *)malloc(pagesize * (256 + 4));\
     mem = (char *)(((size_t)_mem & ~(pagesize-1)) + pagesize * 2);\
     memset(mem, 1, pagesize * 256);\

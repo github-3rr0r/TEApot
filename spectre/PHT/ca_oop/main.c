@@ -84,7 +84,7 @@ int main(int argc, const char **argv)
     leaked[sizeof(DATA_SECRET)] = 0;
 
     int j = 0;
-    start_time = clock();
+    start_time = time(NULL);
     for (int i = 0; i < MAX_TRY_TIMES; i++)
     {
         // for every byte in the string
@@ -97,6 +97,10 @@ int main(int argc, const char **argv)
             {
                 oop();
             }
+            if (time(NULL) - start_time > timeout)
+            {
+                exit(-1);
+            }
         }
         else
         {
@@ -106,7 +110,7 @@ int main(int argc, const char **argv)
             // Recover data from covert channel
             cache_decode_array(leaked, j);
 
-            if (clock() - start_time > timeout)
+            if (time(NULL) - start_time > timeout)
             {
                 printf(ANSI_COLOR_YELLOW "Spectre_PHT_ca_oop: Timeout" ANSI_COLOR_RESET "\n");
                 exit(-1);

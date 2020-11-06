@@ -81,7 +81,7 @@ int main(int argc, char **argv)
     {
         flush(mem2 + i * 4096);
     }
-    start_time = clock();
+    start_time = time(NULL);
     for (int r = 0; r < MAX_TRY_TIMES; r++)
     {
         // Ensure data is in the cache
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
         {
             passed_count++;
         }
-        if (clock() - start_time > timeout)
+        if (time(NULL) - start_time > timeout)
         {
             printf(ANSI_COLOR_YELLOW "Meltdown_SS: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);

@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     *buffer = 's';
     p = (int *)buffer;
 #endif
-    start_time = clock();
+    start_time = time(NULL);
     for (int i = 0; i < MAX_TRY_TIMES; i++)
     {
         // attack
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
         {
             passed_count++;
         }
-        if (clock() - start_time > timeout)
+        if (time(NULL) - start_time > timeout)
         {
             printf(ANSI_COLOR_YELLOW "Meltdown_AC: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);

@@ -57,10 +57,15 @@ int main(int argc, char **argv)
     // Attacker destroys the software stack return address, causing misspeculation
     if (is_child)
     {
+        start_time = time(NULL);
         for (int i = 0; i < 1000; i++)
         {
             // required so that we don't return from our pollute_rsb function, never popping it from the RSB
             asm("return_label:");
+            if (time(NULL) - start_time > timeout)
+            {
+                exit(-1);
+            }
             pollute_rsb();
             // no real execution of this maccess, so we normally should never have cache hits
             // Victim is transiently misdirected here
@@ -71,7 +76,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        start_time = clock();
+        start_time = time(NULL);
         for (int i = 0; i < 1000; i++)
         {
             // Flush shared memory
@@ -85,7 +90,7 @@ int main(int argc, char **argv)
             {
                 passed_count++;
             }
-            if (clock() - start_time > timeout)
+            if (time(NULL) - start_time > timeout)
             {
                 printf(ANSI_COLOR_YELLOW "Spectre_RSB_ca_oop: Timeout" ANSI_COLOR_RESET "\n");
                 printf("Spectre_RSB_ca_oop Done!\n\n");

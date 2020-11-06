@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 
     // Flush our shared memory
     flush_shared_memory();
-    start_time = clock();
+    start_time = time(NULL);
     for (int r = 0; r < MAX_TRY_TIMES; r++)
     {
         // Load data into the cache and fence
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
         {
             passed_count++;
         }
-        if (clock() - start_time > timeout)
+        if (time(NULL) - start_time > timeout)
         {
             printf(ANSI_COLOR_YELLOW "Meltdown_US: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);

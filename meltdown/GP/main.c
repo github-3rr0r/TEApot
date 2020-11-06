@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     // Flush our shared memory
     flush_shared_memory();
     int result = 0;
-    start_time = clock();
+    start_time = time(NULL);
     for (int r = 0; r < MAX_TRY_TIMES; r++)
     {
         // Start TSX
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
                 printf("%x ", result);
             }
         }
-        if (clock() - start_time > timeout)
+        if (time(NULL) - start_time > timeout)
         {
             printf(ANSI_COLOR_YELLOW "Meltdown_GP: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);

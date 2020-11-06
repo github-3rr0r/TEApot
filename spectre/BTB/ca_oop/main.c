@@ -157,12 +157,13 @@ int main(int argc, char **argv)
         size_t hits = 0;
         size_t sucs = 0;
         int exit_result = 0;
-        start_time = clock();
+        start_time = time(NULL);
         while (1)
         {
-            if (clock() - start_time > timeout)
+            if (time(NULL) - start_time > timeout)
             {
                 printf(ANSI_COLOR_YELLOW "Spectre_BTB_ca_oop: Timeout" ANSI_COLOR_RESET "\n");
+                kill(pid ? pid : getppid(), SIGKILL);
                 exit(-1);
             }
             if (trys == MAX_TRY_TIMES)
@@ -202,6 +203,7 @@ int main(int argc, char **argv)
     }
     else
     {
+        start_time = time(NULL);
         while (1)
         {
             maccess(&secret);

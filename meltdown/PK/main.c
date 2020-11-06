@@ -73,7 +73,7 @@ int main(int argc, char **argv)
     // flush memory before access
     flush_shared_memory();
     passed_count = 0;
-    start_time = clock();
+    start_time = time(NULL);
     for (int r = 0; r < MAX_TRY_TIMES; r++)
     {
         // ensure data is cached
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
         {
             passed_count++;
         }
-        if (clock() - start_time > timeout)
+        if (time(NULL) - start_time > timeout)
         {
             printf(ANSI_COLOR_YELLOW "Meltdown_PK: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
