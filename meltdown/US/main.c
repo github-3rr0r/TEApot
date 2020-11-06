@@ -23,13 +23,11 @@ int main(int argc, char **argv)
     // 准备阶段
     PREPARE();
 
-    printf("Meltdown_US Begins...\n");
-
     // Initialize PTEditor to manipulate page table entries
     if (ptedit_init())
     {
-        printf(ANSI_COLOR_YELLOW "Meltdown_US: Error\n" ANSI_COLOR_RESET);
-        printf("Meltdown_US done!\n\n");
+        perror("ptedit_init");
+        printf(ANSI_COLOR_YELLOW "Meltdown_US: Error" ANSI_COLOR_RESET "\n");
         exit(-1);
     }
 
@@ -38,16 +36,16 @@ int main(int argc, char **argv)
     int shm = shm_open("shared_mapping", O_CREAT | O_RDWR, 0644);
     if (shm == -1)
     {
-        printf(ANSI_COLOR_YELLOW "Meltdown_US: Error\n" ANSI_COLOR_RESET);
-        printf("Meltdown_US done!\n\n");
+        perror("shm_open");
+        printf(ANSI_COLOR_YELLOW "Meltdown_US: Error" ANSI_COLOR_RESET "\n");
         exit(-1);
     }
 
     // Set memory objects size
     if (ftruncate(shm, 4096 * 2) == -1)
     {
-        printf(ANSI_COLOR_YELLOW "Meltdown_US: Error\n" ANSI_COLOR_RESET);
-        printf("Meltdown_US done!\n\n");
+        perror("ftruncate");
+        printf(ANSI_COLOR_YELLOW "Meltdown_US: Error" ANSI_COLOR_RESET "\n");
         exit(-1);
     }
 
@@ -90,8 +88,7 @@ int main(int argc, char **argv)
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Meltdown_US: Timeout\n" ANSI_COLOR_RESET);
-            printf("Meltdown_US Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Meltdown_US: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
@@ -99,18 +96,17 @@ int main(int argc, char **argv)
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
         // printf("Success rate: %lf\n", (double)passed_count / MAX_TRY_TIMES);
-        printf(ANSI_COLOR_RED "Meltdown_US: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Meltdown_US: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_US: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Meltdown_US: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
     munmap(victim_page, pagesize);
     munmap(accessor, pagesize);
     shm_unlink("shared_mapping");
     ptedit_cleanup();
-    printf("Meltdown_US Done!\n\n");
     exit(exit_result);
 }

@@ -72,7 +72,6 @@ int main(int argc, char **argv)
     sscanf(argv[1], "%d", &pagesize);
     sscanf(argv[2], "%d", &CACHE_MISS);
     int passed_count = 0;
-    printf("Meltdown_BR Begins!\n");
     int status, i;
     char c = 'X';
     // Install signal handler
@@ -171,14 +170,13 @@ int main(int argc, char **argv)
     int exit_result = 0;
     if (passed_count == 4)
     {
-        printf(ANSI_COLOR_RED "Meltdown_BR: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Meltdown_BR: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_BR: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Meltdown_BR: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    printf("Meltdown_BR Done!\n\n");
     exit(exit_result);
 }

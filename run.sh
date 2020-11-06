@@ -2,7 +2,7 @@
 ####################################################
 # Fuction   : Evaluate whether your system is affected by Meltdown and Spectre
 # Platform  : Linux with gcc and other dependent libraries.
-# Version   : v1.2
+# Version   : v1.2.1
 # Date      : 2020-11-02
 # Author    : https://github.com/github-3rr0r
 # Contact   :
@@ -67,7 +67,7 @@ Examples:
     $(basename $0) -v "meltdown spectre_btb" -o codes -m
         Test all Meltdown and all Spectre_BTB type vulnerabilities, save simple result to result.txt, and successful PoCs to path "codes".
     $(basename $0) -v "meltdown spectre_btb" -g codes
-        PoCs of Meltdown and all Spectre_BTB type vulnerabilities will be saved to path "codes".
+        PoCs of Meltdown and all Spectre_BTB type vulnerabilities will be saved to path "codes" with out test.
 EOF
 }
 
@@ -255,32 +255,49 @@ else
     printf "\033[32m[Init]\033[0m\tThese vuls will be tested: $vuls\n"
     pagesize=$(./libcache/get_pagesize)
     threshold=$(./libcache/get_threshold)
-    printf "\033[32m[Ready]\033[0m\tPagesize = $pagesize, Threshold = $threshold\n\n"
+    printf "\033[32m[Ready]\033[0m\tPagesize = $pagesize, Threshold = $threshold, Timeout = $timeout_time s\n\n"
 
     printf "\033[32m[Begin]\033[0m\tTest begins...\n\n"
 
+    result=""
     # Exploit
     # meltdown_ac
     if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $ac == 1 ]]; then
-        ./meltdown/AC/poc $pagesize $threshold $timeout_time
+        printf "Meltdown_AC Begins...\n"
+        var=`./meltdown/AC/poc $pagesize $threshold $timeout_time 2>&1`
         ac=$?
+        printf "$var\n"
+        result="$result!!\nac $ac\n$var\n!!\n\n"
+        printf "Meltdown_AC Done...\n\n"
     fi
     # meltdown_br
     if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $br == 1 ]]; then
-        ./meltdown/BR/poc $pagesize $threshold
+        printf "Meltdown_BR Begins...\n"
+        var=`./meltdown/BR/poc $pagesize $threshold 2>&1`
         br=$?
+        printf "$var\n"
+        result="$result!!\nbr $br\n$var\n!!\n\n"
+        printf "Meltdown_BR Done...\n\n"
     fi
     # meltdown_de
     if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $de == 1 ]]; then
-        ./meltdown/DE/poc $pagesize $threshold $timeout_time
+        printf "Meltdown_DE Begins...\n"
+        var=`./meltdown/DE/poc $pagesize $threshold $timeout_time 2>&1`
         de=$?
+        printf "$var\n"
+        result="$result!!\nde $de\n$var\n!!\n\n"
+        printf "Meltdown_DE Done...\n\n"
     fi
     # meltdown_gp
     if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $gp == 1 ]]; then
-        sudo insmod libcr3/kernel_module.ko
-        ./meltdown/GP/poc $pagesize $threshold $timeout_time
+        printf "Meltdown_GP Begins...\n"
+        var1=`sudo insmod libcr3/kernel_module.ko 2>&1`
+        var2=`./meltdown/GP/poc $pagesize $threshold $timeout_time 2>&1`
         gp=$?
-        sudo rmmod libcr3/kernel_module.ko
+        var3=`sudo rmmod libcr3/kernel_module.ko 2>&1`
+        printf "$var1\n$var2$var3\n"
+        result="$result!!\ngp $gp\n$var1\n$var2$var3\n!!\n\n"
+        printf "Meltdown_GP Done...\n\n"
     fi
     # meltdown_nm
     if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $nm == 1 ]]; then
@@ -289,124 +306,205 @@ else
         victimpid=$!
         sleep 3
         printf "Done...\n"
-        taskset 0x2 ./meltdown/NM/poc $pagesize $threshold $timeout_time
+        printf "Meltdown_NM Begins...\n"
+        var=`taskset 0x2 ./meltdown/NM/poc $pagesize $threshold $timeout_time 2>&1`
         nm=$?
+        printf "$var\n"
+        result="$result!!\nnm $nm\n$var\n!!\n\n"
+        printf "Meltdown_NM Done...\n"
         printf "Terminating victim process for Meltdown_NM...\n"
-        kill $victimpid >/dev/null 1>&1
+        kill $victimpid >/dev/null
         sleep 1
         printf "Done...\n\n"
     fi
     # meltdown_p
     if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $p == 1 ]]; then
-        sudo insmod libpte/module/pteditor.ko
-        ./meltdown/P/poc $pagesize $threshold $timeout_time
+        printf "Meltdown_P Begins...\n"
+        var1=`sudo insmod libpte/module/pteditor.ko 2>&1`
+        var2=`./meltdown/P/poc $pagesize $threshold $timeout_time 2>&1`
         p=$?
-        sudo rmmod libpte/module/pteditor.ko
+        var3=`sudo rmmod libpte/module/pteditor.ko 2>&1`
+        printf "$var1\n$var2$var3\n"
+        result="$result!!\np $p\n$var1\n$var2$var3\n!!\n\n"
+        printf "Meltdown_P Done...\n\n"
     fi
     # meltdown_pk
     if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $pk == 1 ]]; then
-        ./meltdown/PK/poc $pagesize $threshold $timeout_time
+        printf "Meltdown_PK Begins...\n"
+        var=`./meltdown/PK/poc $pagesize $threshold $timeout_time 2>&1`
         pk=$?
+        printf "$var\n"
+        result="$result!!\npk $pk\n$var\n!!\n\n"
+        printf "Meltdown_PK Done...\n\n"
     fi
     # meltdown_rw
     if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $rw == 1 ]]; then
-        ./meltdown/RW/poc $pagesize $threshold $timeout_time
+        printf "Meltdown_RW Begins...\n"
+        var=`./meltdown/RW/poc $pagesize $threshold $timeout_time 2>&1`
         rw=$?
+        printf "$var\n"
+        result="$result!!\nrw $rw\n$var\n!!\n\n"
+        printf "Meltdown_RW Done...\n\n"
     fi
     # meltdown_ss
     if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $ss == 1 ]]; then
-        ./meltdown/SS/poc $pagesize $threshold $timeout_time
+        printf "Meltdown_SS Begins...\n"
+        var=`./meltdown/SS/poc $pagesize $threshold $timeout_time 2>&1`
         ss=$?
+        printf "$var\n"
+        result="$result!!\nss $ss\n$var\n!!\n\n"
+        printf "Meltdown_SS Done...\n\n"
     fi
     # meltdown_ud
     if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $ud == 1 ]]; then
-        ./meltdown/UD/poc $pagesize $threshold $timeout_time
+        printf "Meltdown_UD Begins...\n"
+        var=`./meltdown/UD/poc $pagesize $threshold $timeout_time 2>&1`
         ud=$?
+        printf "$var\n"
+        result="$result!!\nud $ud\n$var\n!!\n\n"
+        printf "Meltdown_UD Done...\n\n"
+        
     fi
     # meltdown_us
     if [[ $all == 1 ]] || [[ $meltdown == 1 ]] || [[ $us == 1 ]]; then
-        sudo insmod libpte/module/pteditor.ko
-        ./meltdown/US/poc $pagesize $threshold $timeout_time
+        printf "Meltdown_US Begins...\n"
+        var1=`sudo insmod libpte/module/pteditor.ko 2>&1`
+        var2=`./meltdown/US/poc $pagesize $threshold $timeout_time 2>&1`
         us=$?
-        sudo rmmod libpte/module/pteditor.ko
+        var3=`sudo rmmod libpte/module/pteditor.ko 2>&1`
+        printf "$var1\n$var2$var3\n"
+        printf "Meltdown_US Done...\n\n"
+        result="$result!!\nus $us\n$var1\n$var2$var3\n!!\n\n"
     fi
 
     # spectre_btb
     # spectre_btb_ca_ip
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_ca_ip == 1 ]]; then
-        ./spectre/BTB/ca_ip/poc $pagesize $threshold $timeout_time
+        printf "Spectre_BTB_ca_ip Begins...\n"
+        var=`./spectre/BTB/ca_ip/poc $pagesize $threshold $timeout_time 2>&1`
         btb_ca_ip=$?
-        wait $!
-        sleep 3
+        printf "$var\n"
+        result="$result!!\nbtb_ca_ip $btb_ca_ip\n$var\n!!\n\n"
+        printf "Spectre_BTB_ca_ip Done...\n\n"
     fi
     # spectre_btb_ca_oop
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_ca_oop == 1 ]]; then
+        printf "Spectre_BTB_ca_oop Begins...\n"
         cd spectre/BTB/ca_oop
-        ./exploit.sh
+        var=`./exploit.sh 2>&1`
         btb_ca_oop=$?
+        printf "$var\n"
+        result="$result!!\nbtb_ca_oop $btb_ca_oop\n$var\n!!\n\n"
+        printf "Spectre_BTB_ca_oop Done...\n\n"
         cd ../../../
     fi
     # spectre_btb_sa_ip
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_sa_ip == 1 ]]; then
-        ./spectre/BTB/sa_ip/poc $pagesize $threshold $timeout_time
+        printf "Spectre_BTB_sa_ip Begins...\n"
+        var=`./spectre/BTB/sa_ip/poc $pagesize $threshold $timeout_time 2>&1`
         btb_sa_ip=$?
+        printf "$var\n"
+        result="$result!!\nbtb_sa_ip $btb_sa_ip\n$var\n!!\n\n"
+        printf "Spectre_BTB_sa_ip Done...\n\n"
     fi
     # spectre_btb_sa_oop
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $btb == 1 ]] || [[ $btb_sa_oop == 1 ]]; then
-        ./spectre/BTB/sa_oop/poc $pagesize $threshold $timeout_time
+        printf "Spectre_BTB_sa_oop Begins...\n"
+        var=`./spectre/BTB/sa_oop/poc $pagesize $threshold $timeout_time 2>&1`
         btb_sa_oop=$?
+        printf "$var\n"
+        result="$result!!\nbtb_sa_oop $btb_sa_oop\n$var\n!!\n\n"
+        printf "Spectre_BTB_sa_oop Done...\n\n"
     fi
 
     # spectre_pht
     # spectre_pht_ca_ip
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_ca_ip == 1 ]]; then
-        ./spectre/PHT/ca_ip/poc $pagesize $threshold $timeout_time
+        printf "Spectre_PHT_ca_ip Begins...\n"
+        var=`./spectre/PHT/ca_ip/poc $pagesize $threshold $timeout_time 2>&1`
         pht_ca_ip=$?
+        printf "$var\n"
+        result="$result!!\npht_ca_ip $pht_ca_ip\n$var\n!!\n\n"
+        printf "Spectre_PHT_ca_ip Done...\n\n"
+        
     fi
     # spectre_pht_ca_oop
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_ca_oop == 1 ]]; then
-        ./spectre/PHT/ca_oop/poc $pagesize $threshold $timeout_time
+        printf "Spectre_PHT_ca_oop Begins...\n"
+        var=`./spectre/PHT/ca_oop/poc $pagesize $threshold $timeout_time 2>&1`
         pht_ca_oop=$?
+        printf "$var\n"
+        result="$result!!\npht_ca_oop $pht_ca_oop\n$var\n!!\n\n"
+        printf "Spectre_PHT_ca_oop Done...\n\n"
     fi
     # spectre_pht_sa_ip
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_sa_ip == 1 ]]; then
-        ./spectre/PHT/sa_ip/poc $pagesize $threshold $timeout_time
+        printf "Spectre_PHT_sa_ip Begins...\n"
+        var=`./spectre/PHT/sa_ip/poc $pagesize $threshold $timeout_time 2>&1`
         pht_sa_ip=$?
+        printf "$var\n"
+        result="$result!!\npht_sa_ip $pht_sa_ip\n$var\n!!\n\n"
+        printf "Spectre_PHT_sa_ip Done...\n\n"
     fi
     # spectre_pht_sa_oop
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $pht == 1 ]] || [[ $pht_sa_oop == 1 ]]; then
-        ./spectre/PHT/sa_oop/poc $pagesize $threshold $timeout_time
+        printf "Spectre_PHT_sa_oop Begins...\n"
+        var=`./spectre/PHT/sa_oop/poc $pagesize $threshold $timeout_time 2>&1`
         pht_sa_oop=$?
+        printf "$var\n"
+        result="$result!!\npht_sa_oop $pht_sa_oop\n$var\n!!\n\n"
+        printf "Spectre_PHT_sa_oop Done...\n\n"
     fi
 
     # spectre_rsb
     # spectre_rsb_ca_ip
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_ca_ip == 1 ]]; then
-        ./spectre/RSB/ca_ip/poc $pagesize $threshold $timeout_time
+        printf "Spectre_RSB_ca_ip Begins...\n"
+        var=`./spectre/RSB/ca_ip/poc $pagesize $threshold $timeout_time 2>&1`
         rsb_ca_ip=$?
+        printf "$var\n"
+        result="$result!!\nrsb_ca_ip $rsb_ca_ip\n$var\n!!\n\n"
+        printf "Spectre_RSB_ca_ip Done...\n\n"
     fi
     # spectre_rsb_ca_oop
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_ca_oop == 1 ]]; then
-        ./spectre/RSB/ca_oop/poc $pagesize $threshold $timeout_time
+        printf "Spectre_RSB_ca_oop Begins...\n"
+        var=`./spectre/RSB/ca_oop/poc $pagesize $threshold $timeout_time 2>&1`
         rsb_ca_oop=$?
+        printf "$var\n"
+        result="$result!!\nrsb_ca_oop $rsb_ca_oop\n$var\n!!\n\n"
+        printf "Spectre_RSB_ca_oop Done...\n\n"
     fi
     # spectre_rsb_sa_ip
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_sa_ip == 1 ]]; then
-        ./spectre/RSB/sa_ip/poc $pagesize $threshold $timeout_time
+        printf "Spectre_RSB_sa_ip Begins...\n"
+        var=`./spectre/RSB/sa_ip/poc $pagesize $threshold $timeout_time 2>&1`
         rsb_sa_ip=$?
+        printf "$var\n"
+        result="$result!!\nrsb_sa_ip $rsb_sa_ip\n$var\n!!\n\n"
+        printf "Spectre_RSB_sa_ip Done...\n\n"
     fi
     # spectre_rsb_sa_oop
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $rsb == 1 ]] || [[ $rsb_sa_oop == 1 ]]; then
-        ./spectre/RSB/sa_oop/poc $pagesize $threshold $timeout_time
+        printf "Spectre_RSB_sa_oop Begins...\n"
+        var=`./spectre/RSB/sa_oop/poc $pagesize $threshold $timeout_time 2>&1`
         rsb_sa_oop=$?
+        printf "$var\n"
+        result="$result!!\nrsb_sa_oop $rsb_sa_oop\n$var\n!!\n\n"
+        printf "Spectre_RSB_sa_oop Done...\n\n"
     fi
 
     # spectre_stl
     if [[ $all == 1 ]] || [[ $spectre == 1 ]] || [[ $stl == 1 ]]; then
-        ./spectre/STL/poc $pagesize $threshold $timeout_time
+        printf "Spectre_STL Begins...\n"
+        var=`./spectre/STL/poc $pagesize $threshold $timeout_time 2>&1`
         stl=$?
+        printf "$var\n"
+        result="$result!!\nstl $stl\n$var\n!!\n\n"
+        printf "Spectre_STL Done...\n\n"
     fi
     printf "\033[32m[Done]\033[0m\tAll tests done!\n"
+
     # Output report
     result_n="\033[32mN\033[0m"
     result_y="\033[31mY\033[0m"
@@ -630,30 +728,9 @@ Note: \033[32m[N]\033[0m: Not vulnerable; \033[31m[Y]\033[0m: Vulnerable; \033[3
         if [[ -f result.txt ]]; then
             rm result.txt
         fi
-        echo -e "ac $ac" >>result.txt 2>&1
-        echo -e "br $br" >>result.txt 2>&1
-        echo -e "de $de" >>result.txt 2>&1
-        echo -e "gp $gp" >>result.txt 2>&1
-        echo -e "nm $nm" >>result.txt 2>&1
-        echo -e "p $p" >>result.txt 2>&1
-        echo -e "pk $pk" >>result.txt 2>&1
-        echo -e "rw $rw" >>result.txt 2>&1
-        echo -e "ss $ss" >>result.txt 2>&1
-        echo -e "ud $ud" >>result.txt 2>&1
-        echo -e "us $us" >>result.txt 2>&1
-        echo -e "btb_sa_ip $btb_sa_ip" >>result.txt 2>&1
-        echo -e "btb_sa_oop $btb_sa_oop" >>result.txt 2>&1
-        echo -e "btb_ca_ip $btb_ca_ip" >>result.txt 2>&1
-        echo -e "btb_ca_oop $btb_ca_oop" >>result.txt 2>&1
-        echo -e "pht_sa_ip $pht_sa_ip" >>result.txt 2>&1
-        echo -e "pht_sa_oop $pht_sa_oop" >>result.txt 2>&1
-        echo -e "pht_ca_ip $pht_ca_ip" >>result.txt 2>&1
-        echo -e "pht_ca_oop $pht_ca_oop" >>result.txt 2>&1
-        echo -e "rsb_sa_ip $rsb_sa_ip" >>result.txt 2>&1
-        echo -e "rsb_sa_oop $rsb_sa_oop" >>result.txt 2>&1
-        echo -e "rsb_ca_ip $rsb_ca_ip" >>result.txt 2>&1
-        echo -e "rsb_ca_oop $rsb_ca_oop" >>result.txt 2>&1
-        echo -e "stl $stl" >>result.txt 2>&1
+        printf "$result" >> result.txt
+        sed -i 's/\[[0-9][0-9]m//' result.txt
+        sed -i 's/\[0m//' result.txt
         printf "\n\033[32m[Done]\033[0m\tSimple result file generated(result.txt).\n"
     fi
 fi

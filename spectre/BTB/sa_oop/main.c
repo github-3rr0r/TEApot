@@ -37,7 +37,6 @@ void dump_secret()
 int main(int argc, const char **argv)
 {
     PREPARE();
-    printf("Spectre_BTB_sa_oop Begins...\n");
     // install signal handler
     signal(SIGSEGV, segfault_handler);
 
@@ -84,22 +83,20 @@ int main(int argc, const char **argv)
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Spectre_BTB_sa_oop: Timeout\n" ANSI_COLOR_RESET);
-            printf("Spectre_BTB_sa_oop Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Spectre_BTB_sa_oop: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
     int exit_result = 0;
     if (passed_count > 0)
     {
-        printf(ANSI_COLOR_RED "Spectre_BTB_sa_oop: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Spectre_BTB_sa_oop: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Spectre_BTB_sa_oop: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Spectre_BTB_sa_oop: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    printf("Spectre_BTB_sa_oop Done!\n\n");
     exit(exit_result);
 }

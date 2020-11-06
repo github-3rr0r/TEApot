@@ -41,7 +41,6 @@ char access_array(int x)
 int main(int argc, const char **argv)
 {
     PREPARE();
-    printf("Spectre_PHT_sa_ip Begins...\n");
 
     // store secret
     memset(data, ' ', sizeof(data));
@@ -77,8 +76,7 @@ int main(int argc, const char **argv)
         cache_decode_array(leaked, j);
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Spectre_PHT_sa_ip: Timeout\n" ANSI_COLOR_RESET);
-            printf("Spectre_PHT_sa_ip Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Spectre_PHT_sa_ip: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
@@ -92,14 +90,13 @@ int main(int argc, const char **argv)
     int exit_result = 0;
     if (passed_count > 0)
     {
-        printf(ANSI_COLOR_RED "Spectre_PHT_sa_ip: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Spectre_PHT_sa_ip: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Spectre_PHT_sa_ip: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Spectre_PHT_sa_ip: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    printf("Spectre_PHT_sa_ip Done!\n\n");
     exit(exit_result);
 }

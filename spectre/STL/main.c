@@ -51,8 +51,6 @@ int main(int argc, char **argv)
 {
     PREPARE();
 
-    printf("Spectre_STL Begins...\n");
-
     data = malloc(128);
     // store secret
     strcpy(data, SECRET);
@@ -80,8 +78,7 @@ int main(int argc, char **argv)
         cache_decode_array(leaked, j);
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Spectre_STL: Timeout\n" ANSI_COLOR_RESET);
-            printf("Spectre_STL Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Spectre_STL: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
@@ -96,14 +93,13 @@ int main(int argc, char **argv)
     int exit_result = 0;
     if (passed_count > 0)
     {
-        printf(ANSI_COLOR_RED "Spectre_STL: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Spectre_STL: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Spectre_STL: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Spectre_STL: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    printf("Spectre_STL done!\n\n");
     exit(exit_result);
 }

@@ -19,12 +19,11 @@ char *victim_page;
 int main(int argc, char **argv)
 {
     PREPARE();
-    printf("Meltdown_P Begins...\n");
     // Initialize PTEditor to manipulate page table entries
     if (ptedit_init())
     {
-        printf(ANSI_COLOR_YELLOW "Meltdown_P: Error\n" ANSI_COLOR_RESET);
-        printf("Meltdown_P done!\n\n");
+        perror("ptedit_init");
+        printf(ANSI_COLOR_YELLOW "Meltdown_P: Error" ANSI_COLOR_RESET "\n");
         exit(-1);
     }
 
@@ -34,16 +33,16 @@ int main(int argc, char **argv)
     int shm = shm_open("shared_mapping", O_CREAT | O_RDWR, 0644);
     if (shm == -1)
     {
-        printf(ANSI_COLOR_YELLOW "Meltdown_P: Error\n" ANSI_COLOR_RESET);
-        printf("Meltdown_P done!\n\n");
+        perror("shm_open");
+        printf(ANSI_COLOR_YELLOW "Meltdown_P: Error" ANSI_COLOR_RESET "\n");
         exit(-1);
     }
 
     // Set memory objects size
     if (ftruncate(shm, 4096 * 2) == -1)
     {
-        printf(ANSI_COLOR_YELLOW "Meltdown_P: Error\n" ANSI_COLOR_RESET);
-        printf("Meltdown_P done!\n\n");
+        perror("ftruncate");
+        printf(ANSI_COLOR_YELLOW "Meltdown_P: Error" ANSI_COLOR_RESET "\n");
         exit(-1);
     }
 
@@ -85,25 +84,23 @@ int main(int argc, char **argv)
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Meltdown_P: Timeout\n" ANSI_COLOR_RESET);
-            printf("Meltdown_P Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Meltdown_P: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
     int exit_result = 0;
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
-        printf(ANSI_COLOR_RED "Meltdown_P: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Meltdown_P: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_P: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Meltdown_P: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
     munmap(victim_page, pagesize);
     munmap(accessor, pagesize);
     ptedit_cleanup();
-    printf("Meltdown_P Done!\n\n");
     exit(exit_result);
 }

@@ -52,7 +52,6 @@ void *__attribute__((noinline)) victim()
 int main(int argc, char **argv)
 {
     PREPARE();
-    printf("Spectre_RSB_sa_ip Begins...\n");
 
     // Create two interleaving threads
     pthread_t attacker_thread;
@@ -74,24 +73,22 @@ int main(int argc, char **argv)
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Spectre_RSB_sa_ip: Timeout\n" ANSI_COLOR_RESET);
-            printf("Spectre_RSB_sa_ip Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Spectre_RSB_sa_ip: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
     int exit_result = 0;
     if (passed_count > 0)
     {
-        printf(ANSI_COLOR_RED "Spectre_RSB_sa_ip: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Spectre_RSB_sa_ip: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Spectre_RSB_sa_ip: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Spectre_RSB_sa_ip: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
     pthread_join(attacker_thread, NULL);
     pthread_join(victim_thread, NULL);
-    printf("Spectre_RSB_sa_ip Done!\n\n");
     exit(exit_result);
 }

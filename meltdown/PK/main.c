@@ -13,7 +13,6 @@
 int main(int argc, char **argv)
 {
     PREPARE();
-    printf("Meltdown_PK Begins...\n");
     int status;
     int pkey;
     char *buffer;
@@ -21,8 +20,8 @@ int main(int argc, char **argv)
                           MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
     if (buffer == MAP_FAILED)
     {
-        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error\n" ANSI_COLOR_RESET);
-        printf("Meltdown_PK done!\n\n");
+        perror("mmap");
+        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error" ANSI_COLOR_RESET "\n");
         exit(-1);
     }
 
@@ -30,12 +29,12 @@ int main(int argc, char **argv)
     *buffer = 'S';
 
     // Allocate a protection key:
-    // pkey = pkey_alloc(0, PKEY_DISABLE_ACCESS);
-    pkey = syscall(330, 0, 0);
+    pkey = pkey_alloc(0, PKEY_DISABLE_ACCESS);
+    // pkey = syscall(330, 0, 0);
     if (pkey == -1)
     {
-        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error\n" ANSI_COLOR_RESET);
-        printf("Meltdown_PK done!\n\n");
+        perror("pkey_alloc");
+        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error" ANSI_COLOR_RESET "\n");
         exit(-1);
     }
 
@@ -44,8 +43,8 @@ int main(int argc, char **argv)
     status = pkey_set(pkey, 0);
     if (status)
     {
-        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error\n" ANSI_COLOR_RESET);
-        printf("Meltdown_PK done!\n\n");
+        perror("pkey_set");
+        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error" ANSI_COLOR_RESET "\n");
         exit(-1);
     }
 
@@ -55,8 +54,8 @@ int main(int argc, char **argv)
     status = pkey_mprotect(buffer, getpagesize(), PROT_READ | PROT_WRITE, pkey);
     if (status == -1)
     {
-        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error\n" ANSI_COLOR_RESET);
-        printf("Meltdown_PK done!\n\n");
+        perror("pkey_mprotect");
+        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error" ANSI_COLOR_RESET "\n");
         exit(-1);
     }
 
@@ -66,8 +65,8 @@ int main(int argc, char **argv)
     status = pkey_set(pkey, 0x1);
     if (status)
     {
-        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error\n" ANSI_COLOR_RESET);
-        printf("Meltdown_PK done!\n\n");
+        perror("pkey_set");
+        printf(ANSI_COLOR_YELLOW "Meltdown_PK: Error" ANSI_COLOR_RESET "\n");
         exit(-1);
     }
 
@@ -111,23 +110,21 @@ int main(int argc, char **argv)
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Meltdown_PK: Timeout\n" ANSI_COLOR_RESET);
-            printf("Meltdown_PK Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Meltdown_PK: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
     int exit_result = 0;
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
-        printf(ANSI_COLOR_RED "Meltdown_PK: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Meltdown_PK: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Meltdown_PK: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    printf("Meltdown_PK Done!\n\n");
 
     munmap(buffer, pagesize);
     // Free protection key

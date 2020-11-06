@@ -59,7 +59,6 @@ int main(int argc, char **argv)
 {
 
     PREPARE();
-    printf("Spectre_RSB_sa_oop Begins...\n");
 
     // flush our shared memory
     flush_shared_memory();
@@ -83,8 +82,7 @@ int main(int argc, char **argv)
         sched_yield();
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Spectre_RSB_sa_oop: Timeout\n" ANSI_COLOR_RESET);
-            printf("Spectre_RSB_sa_oop Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Spectre_RSB_sa_oop: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
@@ -95,18 +93,16 @@ int main(int argc, char **argv)
             passed_count++;
         }
     }
-    puts(leaked);
     int exit_result = 0;
     if (passed_count > 0)
     {
-        printf(ANSI_COLOR_RED "Spectre_RSB_sa_oop: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Spectre_RSB_sa_oop: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Spectre_RSB_sa_oop: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Spectre_RSB_sa_oop: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    printf("Spectre_RSB_sa_oop done!\n\n");
     exit(exit_result);
 }

@@ -1,24 +1,125 @@
-ac 1
+!!
+ac 0
+Meltdown_AC: Vulnerable
+!!
+
+!!
 br 0
+Meltdown_BR: Vulnerable
+!!
+
+!!
 de 1
+Meltdown_DE: Not Vulnerable
+!!
+
+!!
 gp 1
+
+CR3: 0x25e54e000
+Meltdown_GP: Not Vulnerable
+!!
+
+!!
 nm 1
+Meltdown_NM: Not Vulnerable
+!!
+
+!!
 p 1
+
+Meltdown_P: Not Vulnerable
+!!
+
+!!
 pk 255
+pkey_alloc: Invalid argument
+Meltdown_PK: Error
+!!
+
+!!
 rw 0
+Meltdown_RW: Vulnerable
+!!
+
+!!
 ss 1
+Meltdown_SS: Not Vulnerable
+!!
+
+!!
 ud 1
+Meltdown_UD: Not Vulnerable
+!!
+
+!!
 us 0
-btb_sa_ip 0
-btb_sa_oop 1
+
+Meltdown_US: Vulnerable
+!!
+
+!!
 btb_ca_ip 1
+Spectre_BTB_ca_ip: Not Vulnerable
+!!
+
+!!
 btb_ca_oop 1
-pht_sa_ip 0
-pht_sa_oop 0
+Spectre_BTB_ca_oop: Not Vulnerable
+!!
+
+!!
+btb_sa_ip 0
+Spectre_BTB_sa_ip: Vulnerable
+!!
+
+!!
+btb_sa_oop 1
+Spectre_BTB_sa_oop: Not Vulnerable
+!!
+
+!!
 pht_ca_ip 0
+Spectre_PHT_ca_ip: Vulnerable
+!!
+
+!!
 pht_ca_oop 0
-rsb_sa_ip 1
-rsb_sa_oop 0
+Spectre_PHT_ca_oop: Vulnerable
+!!
+
+!!
+pht_sa_ip 0
+Spectre_PHT_sa_ip: Vulnerable
+!!
+
+!!
+pht_sa_oop 0
+Spectre_PHT_sa_oop: Vulnerable
+!!
+
+!!
 rsb_ca_ip 1
+Spectre_RSB_ca_ip: Not Vulnerable
+!!
+
+!!
 rsb_ca_oop 1
-stl 0
+Spectre_RSB_ca_oop: Not Vulnerable
+!!
+
+!!
+rsb_sa_ip 1
+Spectre_RSB_sa_ip: Not Vulnerable
+!!
+
+!!
+rsb_sa_oop 1
+Spectre_RSB_sa_oop: Not Vulnerable
+!!
+
+!!
+stl 1
+Spectre_STL: Not Vulnerable
+!!
+

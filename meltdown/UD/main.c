@@ -15,7 +15,6 @@ int main(int argc, char **argv)
 {
     PREPARE();
 
-    printf("Meltdown_UD Begins...\n");
     int status;
     int pkey;
     char *buffer;
@@ -59,22 +58,20 @@ int main(int argc, char **argv)
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Meltdown_UD: Timeout\n" ANSI_COLOR_RESET);
-            printf("Meltdown_UD Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Meltdown_UD: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
     int exit_result = 0;
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
-        printf(ANSI_COLOR_RED "Meltdown_UD: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Meltdown_UD: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_UD: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Meltdown_UD: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    printf("Meltdown_UD Done!\n\n");
     exit(exit_result);
 }

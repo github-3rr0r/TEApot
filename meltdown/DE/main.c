@@ -12,7 +12,6 @@
 int main(int argc, char **argv)
 {
     PREPARE();
-    printf("Meltdown_DE Begins...\n");
     volatile int d = 0;
     // Flush our shared memory
     flush_shared_memory();
@@ -37,8 +36,7 @@ int main(int argc, char **argv)
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Meltdown_DE: Timeout\n" ANSI_COLOR_RESET);
-            printf("Meltdown_DE Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Meltdown_DE: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
@@ -46,14 +44,13 @@ int main(int argc, char **argv)
     int exit_result = 0;
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
-        printf(ANSI_COLOR_RED "Meltdown_DE: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Meltdown_DE: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_DE: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Meltdown_DE: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    printf("Meltdown_DE Done!\n\n");
     exit(exit_result);
 }

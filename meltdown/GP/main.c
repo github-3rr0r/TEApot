@@ -12,7 +12,6 @@
 int main(int argc, char **argv)
 {
     PREPARE();
-    printf("Meltdown_GP Begins...\n");
     
     // print CR3 register content
     // int temp = system("sudo insmod ../../libcr3/kernel_module.ko");
@@ -61,8 +60,7 @@ int main(int argc, char **argv)
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Meltdown_GP: Timeout\n" ANSI_COLOR_RESET);
-            printf("Meltdown_GP Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Meltdown_GP: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
@@ -76,14 +74,13 @@ int main(int argc, char **argv)
     
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
-        printf(ANSI_COLOR_RED "Meltdown_GP: Perhaps Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Meltdown_GP: Perhaps Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_GP: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Meltdown_GP: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    printf("Meltdown_GP Done!\n\n");
     exit(exit_result);
 }

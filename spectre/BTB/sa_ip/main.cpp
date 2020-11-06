@@ -71,7 +71,6 @@ void move_animal(Animal *animal)
 int main(int argc, char **argv)
 {
     PREPARE();
-    printf("Spectre_BTB_sa_ip Begins...\n");
     Fish *fish = new Fish();
     Bird *bird = new Bird(); // contains secret
 
@@ -109,8 +108,7 @@ int main(int argc, char **argv)
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Spectre_BTB_sa_ip: Timeout\n" ANSI_COLOR_RESET);
-            printf("Spectre_BTB_sa_ip Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Spectre_BTB_sa_ip: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
@@ -118,14 +116,13 @@ int main(int argc, char **argv)
     if (passed_count > 0)
     {
         // printf("%d", passed_count);
-        printf(ANSI_COLOR_RED "Spectre_BTB_sa_ip: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Spectre_BTB_sa_ip: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Spectre_BTB_sa_ip: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Spectre_BTB_sa_ip: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    printf("Spectre_BTB_sa_ip Done!\n\n");
     exit(exit_result);
 }

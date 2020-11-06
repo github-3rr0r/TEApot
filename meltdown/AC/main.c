@@ -27,8 +27,6 @@ int main(int argc, char **argv)
     // 准备阶段
     PREPARE();
 
-    printf("Meltdown_AC Begins...\n");
-
 // exploit gen
 #ifdef EXPLOIT_VAR
     char *buffer;
@@ -72,8 +70,7 @@ int main(int argc, char **argv)
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Meltdown_AC: Timeout\n" ANSI_COLOR_RESET);
-            printf("Meltdown_AC Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Meltdown_AC: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
@@ -81,15 +78,12 @@ int main(int argc, char **argv)
     // printf("%lf\n", (double)passed_count/MAX_TRY_TIMES);
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
-        printf(ANSI_COLOR_RED "Meltdown_AC: Vulnerable\n" ANSI_COLOR_RESET);
-        exit_result = EXIT_SUCCESS;
+        printf(ANSI_COLOR_RED "Meltdown_AC: Vulnerable" ANSI_COLOR_RESET "\n");
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_AC: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Meltdown_AC: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    // clean
-    printf("Meltdown_AC Done!\n\n");
     exit(exit_result);
 }

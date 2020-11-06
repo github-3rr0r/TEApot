@@ -111,14 +111,17 @@ make
 ```shell
 chmod +x run.sh
 ./run.sh
+# notice that you need input your password for kernel operation during this test
 ```
 
 4. Run options
 ##### Usage
 
 ```
-Auto mode  :                    run.sh [-o filename] [-m]
-Manual mode:                    run.sh [-v "list of vulnerablities"] [-o filename] [-m]
+Test mode                    :  run.sh [-options]
+Generation mode              :  run.sh [-options] -g [output-path]
+Test all vulnerablities      :  run.sh [-o filename] [-m]
+Test specific vulnerablities :  run.sh [-v "list of vulnerablities"] [-o filename] [-m]
 Show usage :                    run.sh -h
 Show supported vulnerablities:  run.sh -l [-m]
 ```
@@ -133,11 +136,13 @@ In manual mode, you can specify vulnerablities to be tested with options -v and 
 ##### Options
 
 ```
+-g              generation mode, specific path to save specific PoCs
 -o              enable and specify a markdown file as output of valid PoCs
 -v              list of vulnerablities to be tested. If not specified, all vuls will be test
 -h              show usage
 -l              show supported vulnerablities
 -s              show simple supported vulnerablities options
+-t              specific timeout time, default 120s
 -m              used in test mode, simple result output will be available. 
                 0 means vulnerable, 1 means not vulnerable, other values mean error or not tested.
 ```
@@ -176,16 +181,15 @@ You can also use multi_parameters to select specific vulnerabilities and separat
 Examples:
 
 ```shell
+# Examples:
 run.sh
     # Test all vulnerabilities.
 run.sh -m
     # Test all vulnerabilities and save simple result to result.txt.
-run.sh -v "meltdown spectre_btb" -o report
-    # Test all Meltdown and all Spectre_BTB type vulnerabilities, and save successful PoCs to report.md.
-run.sh -v "meltdown spectre_btb" -o report -m
-    # Test all Meltdown and all Spectre_BTB type vulnerabilities, save simple result to result.txt, and successful PoCs to report.md.
-```
-
-```
-# This project was originally call Transient Execution Attack Test Suite, but the abbreviation was really cursed. I've also tried TAT, a cute name, but full name without "execution" seems unreasonable. So after careful consideration, I decided to use "TEApot" as the name of the project. Both "pot" and "suite" are containers for something. 
+run.sh -v "meltdown spectre_btb" -o codes
+    # Test all Meltdown and all Spectre_BTB type vulnerabilities, and save successful PoCs to path "codes".
+run.sh -v "meltdown spectre_btb" -o codes -m
+    # Test all Meltdown and all Spectre_BTB type vulnerabilities, save simple result to result.txt, and successful PoCs to path "codes".
+run.sh -v "meltdown spectre_btb" -g codes
+    # PoCs of Meltdown and all Spectre_BTB type vulnerabilities will be saved to path "codes" with out test.
 ```

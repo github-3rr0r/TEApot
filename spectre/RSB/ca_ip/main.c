@@ -62,8 +62,7 @@ char __attribute__((noinline)) victim()
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Spectre_RSB_ca_ip: Timeout\n" ANSI_COLOR_RESET);
-            printf("Spectre_RSB_ca_ip Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Spectre_RSB_ca_ip: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
@@ -72,10 +71,9 @@ char __attribute__((noinline)) victim()
 int main(int argc, char **argv)
 {
     PREPARE();
-    printf("Spectre_RSB_ca_ip Begins...\n");
-
     // OOP attack, so fork
-    is_child = fork() == 0;
+    pid_t pid_child = fork();
+    is_child = pid_child == 0;
 
     // Attacker always encodes a dot in the cache
     if (is_child)
@@ -90,15 +88,15 @@ int main(int argc, char **argv)
         int exit_result = 0;
         if (victim() == SECRET)
         {
-            printf(ANSI_COLOR_RED "Spectre_RSB_ca_ip: Vulnerable\n" ANSI_COLOR_RESET);
+            printf(ANSI_COLOR_RED "Spectre_RSB_ca_ip: Vulnerable" ANSI_COLOR_RESET "\n");
             exit_result = EXIT_SUCCESS;
         }
         else
         {
-            printf(ANSI_COLOR_GREEN "Spectre_RSB_ca_ip: Not Vulnerable\n" ANSI_COLOR_RESET);
+            printf(ANSI_COLOR_GREEN "Spectre_RSB_ca_ip: Not Vulnerable" ANSI_COLOR_RESET "\n");
             exit_result = EXIT_FAILURE;
         }
-        printf("Spectre_RSB_ca_ip Done!\n\n");
+        kill(pid_child, SIGKILL);
         exit(exit_result);
     }
 }

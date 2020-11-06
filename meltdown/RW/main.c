@@ -21,7 +21,6 @@ void readonly_area()
 int main(int argc, char **argv)
 {
     PREPARE();
-    printf("Meltdown_RW Begins...\n");
     // Flush our shared memory
     flush_shared_memory();
     start_time = clock();
@@ -47,8 +46,7 @@ int main(int argc, char **argv)
         }
         if (clock() - start_time > timeout)
         {
-            printf(ANSI_COLOR_YELLOW "Meltdown_RW: Timeout\n" ANSI_COLOR_RESET);
-            printf("Meltdown_RW Done!\n\n");
+            printf(ANSI_COLOR_YELLOW "Meltdown_RW: Timeout" ANSI_COLOR_RESET "\n");
             exit(-1);
         }
     }
@@ -56,14 +54,13 @@ int main(int argc, char **argv)
     int exit_result = 0;
     if ((double)passed_count / MAX_TRY_TIMES > 0.3)
     {
-        printf(ANSI_COLOR_RED "Meltdown_RW: Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_RED "Meltdown_RW: Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_SUCCESS;
     }
     else
     {
-        printf(ANSI_COLOR_GREEN "Meltdown_RW: Not Vulnerable\n" ANSI_COLOR_RESET);
+        printf(ANSI_COLOR_GREEN "Meltdown_RW: Not Vulnerable" ANSI_COLOR_RESET "\n");
         exit_result = EXIT_FAILURE;
     }
-    printf("Meltdown_RW Done!\n\n");
     exit(exit_result);
 }
