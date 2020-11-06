@@ -3,7 +3,7 @@
 # Fuction   : Evaluate whether your system is affected by Meltdown and Spectre
 # Platform  : Linux with gcc and other dependent libraries.
 # Version   : v1.2.1
-# Date      : 2020-11-02
+# Date      : 2020-11-06
 # Author    : https://github.com/github-3rr0r
 # Contact   :
 ####################################################
