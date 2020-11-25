@@ -63,9 +63,9 @@ int main(int argc, char **argv)
     memset(leaked, ' ', sizeof(leaked));
     leaked[sizeof(SECRET)] = 0;
 
-    int j = 0;
+    int i, j = 0;
     start_time = time(NULL);
-    for (int i = 0; i < MAX_TRY_TIMES; i++)
+    for (i = 0; i < MAX_TRY_TIMES; i++)
     {
         // for every byte in the string
         j = (j + 1) % sizeof(SECRET);
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
             exit(-1);
         }
     }
-    for (int i = 0; i < sizeof(SECRET) - 1; i++)
+    for (i = 0; i < sizeof(SECRET) - 1; i++)
     {
         if (SECRET[i] == leaked[i])
         {

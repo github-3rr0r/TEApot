@@ -24,7 +24,8 @@ int main(int argc, char **argv)
     // Flush our shared memory
     flush_shared_memory();
     start_time = time(NULL);
-    for (int i = 0; i < MAX_TRY_TIMES; i++)
+    int i;
+    for (i = 0; i < MAX_TRY_TIMES; i++)
     {
         if (try_start())
         {

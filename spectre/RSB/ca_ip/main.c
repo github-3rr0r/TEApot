@@ -28,7 +28,8 @@ void __attribute__((noinline)) in_place()
 void __attribute__((noinline)) attacker()
 {
     start_time = time(NULL);
-    for (int i = 0; i < MAX_TRY_TIMES; i++)
+    int i;
+    for (i = 0; i < MAX_TRY_TIMES; i++)
     {
         in_place();
         // Encode data in cache
@@ -52,9 +53,9 @@ char __attribute__((noinline)) victim()
 
         // Put to sleep and return transiently to wrong address before returning here
         in_place();
-
+        int i;
         // Recover data from the covert channel
-        for (int i = 0; i < 256; i++)
+        for (i = 0; i < 256; i++)
         {
             int mix_i = ((i * 167) + 13) & 255;
             if (flush_reload(mem + mix_i * pagesize))

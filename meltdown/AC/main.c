@@ -45,7 +45,8 @@ int main(int argc, char **argv)
     p = (int *)buffer;
 #endif
     start_time = time(NULL);
-    for (int i = 0; i < MAX_TRY_TIMES; i++)
+    int i;
+    for (i = 0; i < MAX_TRY_TIMES; i++)
     {
         // attack
         flush_shared_memory();

@@ -22,8 +22,8 @@ void *__attribute__((noinline)) attacker()
 {
     // Attacker is going to sleep for 65
     asm volatile("movq $65, %r14\t\n"); // 65 is 'A'
-
-    for (int i = 0; i < MAX_TRY_TIMES; i++)
+    int i;
+    for (i = 0; i < MAX_TRY_TIMES; i++)
     {
         // Put to sleep
         // As victim will sometimes wake up before the attacker, it will return here
@@ -42,7 +42,8 @@ void *__attribute__((noinline)) victim()
 {
     // Victim is going to sleep for 83
     asm volatile("movq $83, %r14\t\n"); // 83 is 'S'
-    for (int i = 0; i < MAX_TRY_TIMES; i++)
+    int i;
+    for (i = 0; i < MAX_TRY_TIMES; i++)
     {
         // Call function and return here after misspeculation is detected
         in_place();

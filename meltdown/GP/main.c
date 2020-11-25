@@ -28,7 +28,8 @@ int main(int argc, char **argv)
     flush_shared_memory();
     int result = 0;
     start_time = time(NULL);
-    for (int r = 0; r < MAX_TRY_TIMES; r++)
+    int r;
+    for (r = 0; r < MAX_TRY_TIMES; r++)
     {
         // Start TSX
         if (try_start())

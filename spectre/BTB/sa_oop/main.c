@@ -56,7 +56,8 @@ int main(int argc, const char **argv)
     for (int k = 0; k < MAX_TRY_TIMES; k++)
     {
         // Mistrain by calling mistrain (dump_secret) function
-        for (int i = 0; i < 2500; i++)
+        int i;
+        for (i = 0; i < 2500; i++)
             mistrain();
 
         // Flush our shared memory

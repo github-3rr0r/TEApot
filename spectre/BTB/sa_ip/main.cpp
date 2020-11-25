@@ -81,7 +81,8 @@ int main(int argc, char **argv)
 
     ptr[0] = ptr[0];
     start_time = time(NULL);
-    for (int i = 0; i < MAX_TRY_TIMES; i++)
+    int i;
+    for (i = 0; i < MAX_TRY_TIMES; i++)
     {
         nospec();
         // Mistrain the BTB for Fish

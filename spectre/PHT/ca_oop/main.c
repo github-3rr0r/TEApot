@@ -66,7 +66,7 @@ end:
 int main(int argc, const char **argv)
 {
     PREPARE();
-    
+
     pid_t pid = fork();
 
     // store secret
@@ -85,7 +85,8 @@ int main(int argc, const char **argv)
 
     int j = 0;
     start_time = time(NULL);
-    for (int i = 0; i < MAX_TRY_TIMES; i++)
+    int i = 0;
+    for (i = 0; i < MAX_TRY_TIMES; i++)
     {
         // for every byte in the string
         j = (j + 1) % sizeof(DATA_SECRET);
@@ -105,7 +106,7 @@ int main(int argc, const char **argv)
         else
         {
             mfence(); // avoid speculation
-                        // out of bounds access
+                      // out of bounds access
             access_array(j);
             // Recover data from covert channel
             cache_decode_array(leaked, j);
@@ -119,7 +120,7 @@ int main(int argc, const char **argv)
     }
     if (pid != 0)
     {
-        for (int i = 0; i < sizeof(SECRET) - 1; i++)
+        for (i = 0; i < sizeof(SECRET) - 1; i++)
         {
             if (SECRET[i] == leaked[i + sizeof(DATA) - 1])
             {

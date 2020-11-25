@@ -72,14 +72,15 @@ size_t calibration()
     uint8_t stack_space_array[1024 * 1024 * 2];
     void *addr = stack_space_array + 1024 * 1024;
 
-    for (int i = 0; i < measurements; i++)
+    int i;
+    for (i = 0; i < measurements; i++)
     {
         maccess(addr);
         timing = MEASURE({ maccess(addr); });
         touch_hit += timing;
         sched_yield();
     }
-    for (int i = 0; i < measurements; i++)
+    for (i = 0; i < measurements; i++)
     {
         flush(addr);
         timing = MEASURE({ maccess(addr); });
@@ -183,10 +184,11 @@ int main(int argc, char **argv)
                 exit(exit_result);
             }
             trys++;
-            for (int i = 0; i < 100; i++)
+            int i;
+            for (i = 0; i < 100; i++)
                 call_addr(jump);
 
-            for (int i = 0; i < 256; i++)
+            for (i = 0; i < 256; i++)
             {
                 if (MEASURE({ maccess(ARRAY_OFFSET(i)); }) < threshold)
                 {
@@ -197,7 +199,7 @@ int main(int argc, char **argv)
                     }
                 }
             }
-            for (int i = 0; i < 257; i++)
+            for (i = 0; i < 257; i++)
                 flush(ARRAY_OFFSET(i));
         }
     }

@@ -26,7 +26,8 @@ int main(int argc, char **argv)
     // Flush our shared memory
     flush_shared_memory();
     start_time = time(NULL);
-    for (int r = 0; r < MAX_TRY_TIMES; r++)
+    int r;
+    for (r = 0; r < MAX_TRY_TIMES; r++)
     {
         // Ensure data is in the cache
         maccess(buffer);

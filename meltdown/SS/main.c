@@ -82,7 +82,8 @@ int main(int argc, char **argv)
         flush(mem2 + i * 4096);
     }
     start_time = time(NULL);
-    for (int r = 0; r < MAX_TRY_TIMES; r++)
+    int r;
+    for (r = 0; r < MAX_TRY_TIMES; r++)
     {
         // Ensure data is in the cache
         maccess(&secret);

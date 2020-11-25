@@ -84,7 +84,8 @@ int main(int argc, char **argv)
     // trigger COW for the page containing the function
     ptr[0] = ptr[0];
     start_time = time(NULL);
-    for (int i = 0; i < MAX_TRY_TIMES; i++)
+    int i;
+    for (i = 0; i < MAX_TRY_TIMES; i++)
     {
         // Parent is doing the mistraining
         if (is_child)

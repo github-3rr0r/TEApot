@@ -61,7 +61,8 @@ int main(int argc, const char **argv)
 
     int j = 0;
     start_time = time(NULL);
-    for (int i = 0; i < MAX_TRY_TIMES; i++)
+    int i;
+    for (i = 0; i < MAX_TRY_TIMES; i++)
     {
         // for every byte in the string
         j = (j + 1) % sizeof(DATA_SECRET);
@@ -91,7 +92,7 @@ int main(int argc, const char **argv)
     int exit_result = 0;
     if (pid != 0)
     {
-        for (int i = 0; i < sizeof(SECRET) - 1; i++)
+        for (i = 0; i < sizeof(SECRET) - 1; i++)
         {
             if (SECRET[i] == leaked[i + sizeof(DATA) - 1])
             {

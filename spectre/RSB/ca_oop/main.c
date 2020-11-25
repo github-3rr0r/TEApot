@@ -58,7 +58,8 @@ int main(int argc, char **argv)
     if (is_child)
     {
         start_time = time(NULL);
-        for (int i = 0; i < 1000; i++)
+        int i;
+        for (i = 0; i < 1000; i++)
         {
             // required so that we don't return from our pollute_rsb function, never popping it from the RSB
             asm("return_label:");
@@ -77,7 +78,8 @@ int main(int argc, char **argv)
     else
     {
         start_time = time(NULL);
-        for (int i = 0; i < 1000; i++)
+        int i;
+        for (i = 0; i < 1000; i++)
         {
             // Flush shared memory
             flush_shared_memory();

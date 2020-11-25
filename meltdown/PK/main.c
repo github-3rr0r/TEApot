@@ -74,7 +74,8 @@ int main(int argc, char **argv)
     flush_shared_memory();
     passed_count = 0;
     start_time = time(NULL);
-    for (int r = 0; r < MAX_TRY_TIMES; r++)
+    int r;
+    for (r = 0; r < MAX_TRY_TIMES; r++)
     {
         // ensure data is cached
         pkey_set(pkey, 0);

