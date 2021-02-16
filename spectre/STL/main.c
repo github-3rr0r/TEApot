@@ -5,7 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/prctl.h>
-#include <seccomp.h>
+// #include <seccomp.h>
 #include <linux/seccomp.h>
 
 #include "libcache/cache.h"
