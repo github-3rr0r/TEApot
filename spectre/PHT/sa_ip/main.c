@@ -65,7 +65,8 @@ int main(int argc, const char **argv)
         j = (j + 1) % sizeof(DATA_SECRET);
 
         // mistrain with valid index
-        for (int y = 0; y < 10; y++)
+        int y;
+        for (y = 0; y < 10; y++)
         {
             access_array(0);
         }

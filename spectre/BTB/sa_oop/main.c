@@ -53,7 +53,8 @@ int main(int argc, const char **argv)
     dump = (void (*)())(0x123321000000 | (size_t)dump);
     // We now have a function pointer to a function with the same 23 LSB as our leak function
     start_time = time(NULL);
-    for (int k = 0; k < MAX_TRY_TIMES; k++)
+    int k;
+    for (k = 0; k < MAX_TRY_TIMES; k++)
     {
         // Mistrain by calling mistrain (dump_secret) function
         int i;

@@ -94,7 +94,8 @@ int main(int argc, const char **argv)
         // mistrain out of place
         if (pid == 0)
         {
-            for (int y = 0; y < 100; y++)
+            int y;
+            for (y = 0; y < 100; y++)
             {
                 oop();
             }

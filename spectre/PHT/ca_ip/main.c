@@ -70,7 +70,8 @@ int main(int argc, const char **argv)
         // mistrain with valid index
         if (pid == 0)
         {
-            for (int y = 0; y < 10; y++)
+            int y;
+            for (y = 0; y < 10; y++)
             {
                 access_array(0);
             }

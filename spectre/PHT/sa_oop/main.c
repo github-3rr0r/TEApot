@@ -96,7 +96,8 @@ int main(int argc, const char **argv)
         j = (j + 1) % sizeof(DATA_SECRET);
 
         // mistrain out of place
-        for (int y = 0; y < 100; y++)
+        int y;
+        for (y = 0; y < 100; y++)
         {
             oop();
         }

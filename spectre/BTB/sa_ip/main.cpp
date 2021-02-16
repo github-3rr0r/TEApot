@@ -86,7 +86,8 @@ int main(int argc, char **argv)
     {
         nospec();
         // Mistrain the BTB for Fish
-        for (int j = 0; j < 1000; j++)
+        int j;
+        for (j = 0; j < 1000; j++)
         {
             move_animal(fish);
         }

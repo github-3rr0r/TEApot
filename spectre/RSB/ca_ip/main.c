@@ -45,7 +45,8 @@ void __attribute__((noinline)) attacker()
 char __attribute__((noinline)) victim()
 {
     start_time = time(NULL);
-    for (int j = 0; j < MAX_TRY_TIMES; j++)
+    int y;
+    for (j = 0; j < MAX_TRY_TIMES; j++)
     {
         // Flush our shared memory
         flush_shared_memory();
